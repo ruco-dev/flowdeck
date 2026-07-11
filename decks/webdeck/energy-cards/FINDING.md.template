@@ -1,0 +1,16 @@
+# {{TITLE}}
+
+| Field | Value |
+|-------|-------|
+| URL | {{URL}} |
+| Source | {{SOURCE}} |
+| Query | {{QUERY_NAME}} |
+| Date | {{DATE}} |
+
+## Snippet
+
+{{SNIPPET}}
+
+## Relevance
+
+{{RELEVANCE}}

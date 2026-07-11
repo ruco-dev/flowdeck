@@ -1,0 +1,45 @@
+{
+  "name": "farmdeck",
+  "version": "0.4.0",
+  "installRoot": ".farmdeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "farmdeck-add-prospect"
+  ],
+  "sleeveCards": [
+    "farmdeck-init"
+  ],
+  "energyCards": [
+    "PROSPECT.md.template",
+    "INTERACTIONS.md.template",
+    "PIPELINE.md.template",
+    "INBOX.md.template",
+    "PROSPECTS.md.template",
+    "WON.md.template",
+    "DROPPED.md.template",
+    "CONTACTED.md.template"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_farmdeck-inbox",
+      "to": "farmdeck-inbox"
+    },
+    {
+      "from": "_prospects",
+      "to": "prospects"
+    },
+    {
+      "from": "_won",
+      "to": "won"
+    },
+    {
+      "from": "_dropped",
+      "to": "dropped"
+    },
+    {
+      "from": "_pipeline",
+      "to": "pipeline"
+    }
+  ],
+  "description": "Prospection pipeline — Inbox → Seed → Nurture → Active → Won / Dropped"
+}

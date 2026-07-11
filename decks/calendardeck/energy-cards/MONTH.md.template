@@ -1,0 +1,22 @@
+# Summary: {{SLUG}}
+
+{{MONTH_LONG}} {{YYYY}}
+
+> Synced from Google Calendar. Do not edit — overwritten on next sync.
+
+## Events by Week
+
+{{MONTH_TABLE}}
+
+<!-- MONTH_TABLE format:
+| Week | Slug | Date range | Events |
+|------|------|------------|--------|
+| W1 | 202606W1 | Jun 1–7 | 8 |
+| W2 | 202606W2 | Jun 8–14 | 5 |
+-->
+
+## Totals
+
+| Events | Busy hours | Busiest day |
+|--------|------------|-------------|
+| {{TOTAL_EVENTS}} | {{BUSY_HOURS}} | {{BUSIEST_DAY}} |

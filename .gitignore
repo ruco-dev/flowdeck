@@ -1,0 +1,23 @@
+# Flowdeck live deck (local only, not tracked)
+.flowdeck/
+
+# Local decks — not yet public; registry in LOCAL-DECKS.md (also local)
+LOCAL-DECKS.md
+decks/seodeck/
+decks/postdeck/
+
+# Personal Claude config (shared settings.json stays tracked)
+.claude/settings.local.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local env / secrets
+.env
+*.local
+
+# Internal ops journal — client codes and private product names throughout
+FLOWDECK.md

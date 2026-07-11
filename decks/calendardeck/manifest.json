@@ -1,0 +1,30 @@
+{
+  "name": "calendardeck",
+  "version": "0.5.0",
+  "installRoot": ".calendardeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [],
+  "sleeveCards": [
+    "calendardeck-init"
+  ],
+  "energyCards": [
+    "SYNC.md.template",
+    "DAY.md.template",
+    "WEEK.md.template",
+    "MONTH.md.template",
+    "YEAR.md.template",
+    "NOTES.md.template",
+    "EVENT.md.template"
+  ],
+  "renameRegistry": [
+    {
+      "from": "sync",
+      "to": "_sync"
+    },
+    {
+      "from": "events",
+      "to": "_events"
+    }
+  ],
+  "description": "Google Calendar events as flowdeck cards — one-way sync (GCal → local, with an MCP fallback tier) over browser-OAuth REST v3, per-day/week/month/year cards, day-scoped re-sync with idempotent meeting notes, and a flat quick-event convention for ad-hoc meetings"
+}

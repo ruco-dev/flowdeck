@@ -1,0 +1,68 @@
+# Backlog: {{PRODUCT_NAME}}
+
+**Package:** {{NPM_SCOPE}}
+**Updated:** {{DATE}}
+
+---
+
+<!--
+INSTRUCTIONS FOR THE MODEL:
+Output this document with every section filled in. No prose outside the structure.
+BACKLOG is the CURATED, STRATEGIC candidate inventory — product-level and human-readable.
+It is NOT granular issue tracking (that's GitHub Issues, reached via flowdeck) and NOT
+committed sequence (that's ROADMAP).
+- Pipeline: BACKLOG (candidate) -> ROADMAP (committed) -> flowdeck cards / Issues (executing).
+- Keep items strategic; if an item is small and ready, it belongs in Issues, not here.
+- Priority: P0 (next up) .. P3 (someday). Effort: S / M / L.
+- For genuinely unknown information write "TBD — [what needs to be decided]".
+- Remove HTML comments from the final output. Do not add, remove, or reorder sections.
+-->
+
+## Overview
+
+> {{PROMPT}}
+
+---
+
+## Signal
+
+<!-- Continuous customer/market signal — the INPUT side of the backlog. Every entry must
+     trace to a candidate item, or it's noise. Pull where possible (Ahrefs for search demand,
+     Windsor.ai for channels, a content-analysis MCP for content) rather than hand-typing. -->
+
+| Signal | Source | Date | → Item |
+|---|---|---|---|
+|  |  |  |  |
+
+## Candidate Items
+
+<!-- Type: feature | content | market | infra. Unscheduled until promoted to ROADMAP. -->
+
+| ID | Item | Type | Priority | Effort | Notes |
+|---|---|---|---|---|---|
+|  |  |  |  |  |  |
+
+## Promotion Log
+
+<!-- When an item moves to ROADMAP or becomes flowdeck cards / Issues, record it here. -->
+
+| Item | Promoted to | Date |
+|---|---|---|
+|  |  |  |
+
+## Icebox
+
+<!-- Parked, not rejected. Reason kept so it can be revisited deliberately. -->
+
+| Item | Why parked |
+|---|---|
+|  |  |
+
+## Open Questions
+
+<!-- When a question resolves into a decision, capture it as an ADR (_decisions/ADR-XXXX.md)
+     and link it here — keep the rationale in the ADR, not inline. -->
+
+- [ ] TODO:
+
+---

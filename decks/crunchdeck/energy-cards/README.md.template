@@ -1,0 +1,74 @@
+<!--
+INSTRUCTIONS FOR THE MODEL:
+Substitute {{PRODUCT_NAME}} and {{DATE}} only. Do not fill in or alter any other content.
+Remove this HTML comment from the final output.
+-->
+
+# crunchdeck — {{PRODUCT_NAME}}
+
+Product management layer powered by [crunchdeck](https://github.com/ruco-dev/crunchdeck) + [flowdeck](https://github.com/ruco-dev/flowdeck). Initialized {{DATE}}.
+
+Each document lives inside a card folder alongside a `TODO.md`. This directory sits at `.flowdeck/.crunchdeck/` and is excluded from `flowdeck turn` — play cards explicitly: `flowdeck play .crunchdeck/_profile`.
+
+---
+
+## _profile/
+
+**`PROFILE.md`** is the slow-changing identity layer and the single source of truth for the product. It holds the canonical one-liner, elevator pitch, north-star metric, market lane, and tagline candidates. Everything else — launch copy, roadmap outcomes, pitch decks — references this document, never re-authors it.
+
+Update it when the positioning changes, not every sprint. If you find yourself rewriting the one-liner in another document, update `PROFILE.md` and reference it instead.
+
+---
+
+## _backlog/
+
+**`BACKLOG.md`** is the curated intake pipeline. It has two sides:
+
+- **Candidate Items** — strategic, unscheduled work. Items stay here until a human explicitly promotes them to the roadmap.
+
+Backlog is not issue tracking (that's GitHub Issues reached via flowdeck cards) and not committed sequence (that's `ROADMAP.md`). Keep items at the strategic level.
+
+Signals arrive via `inbox/` — forwarded from emaildeck, gitdeck, or webdeck using `send-to-crunchdeck`. Route inbox cards to backlog using the `to-backlog` action.
+
+---
+
+## _roadmap/
+
+**`ROADMAP.md`** holds committed themes by horizon — **Now**, **Next**, **Later** — each outcome-oriented and tracing back to the north-star metric in `PROFILE.md`. Items enter via explicit promotion from `BACKLOG.md`; they don't appear here spontaneously.
+
+Now = actively being built. Next = committed but not started. Later = directionally committed, details TBD.
+
+Use `crunchdeck-promote` to move candidates from backlog to roadmap.
+
+---
+
+## _decisions/
+
+**`_decisions/ADR-XXXX/`** records architectural and product decisions. Each ADR answers: what did we decide, why, and what alternatives did we reject? The format is deliberate — future team members (and future you) need to understand not just what was decided but why, so they don't unknowingly reverse it.
+
+Create a new ADR whenever a decision is significant enough that reversing it would cost meaningful time or money. Small implementation choices don't need ADRs; architecture, tech stack, and pricing model choices do.
+
+ADRs are permanent. They are never deleted or overwritten — only superseded by a newer ADR that references the old one.
+
+Use `crunchdeck-adr` to open one: `flowdeck blueprint use crunchdeck-adr <slug>`
+
+---
+
+## _launches/
+
+**`_launches/vX.Y.Z/`** is a per-release operational checklist. It gates the ship: product, docs, distribution, brand, measurement — all binary checks that must be green before publishing. It references `PROFILE.md` for copy; it does not restate it.
+
+Create one when a release is being prepared; archive it (move to `_meld/`) after the release ships. Launches are not strategy documents — they are pre-flight checklists.
+
+Open questions that surface during a launch and resolve into real decisions should be captured as ADRs, not left inline in `LAUNCH.md`.
+
+---
+
+## Pipeline
+
+```
+emaildeck / gitdeck / webdeck  (send-to-crunchdeck)
+  → inbox/
+  → Backlog / Roadmap / Decision
+  → flowdeck cards / GitHub Issues
+```

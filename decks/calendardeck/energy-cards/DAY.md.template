@@ -1,0 +1,15 @@
+# Events: {{SLUG}}
+
+{{WEEKDAY}}, {{DATE_LONG}}
+
+> Synced from Google Calendar. Do not edit — overwritten on next sync.
+
+## Events
+
+{{EVENTS_TABLE}}
+
+<!-- EVENTS_TABLE format:
+| Time | Title | Location | Attendees |
+|------|-------|----------|-----------|
+| 10:00–11:00 | Standup | — | alice, bob |
+-->

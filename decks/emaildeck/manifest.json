@@ -1,0 +1,53 @@
+{
+  "name": "emaildeck",
+  "version": "0.9.2",
+  "installRoot": ".emaildeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "emaildeck-add-filter",
+    "emaildeck-compose",
+    "emaildeck-backfill-bodies",
+    "emaildeck-digest"
+  ],
+  "sleeveCards": [
+    "emaildeck-init",
+    "emaildeck-setup"
+  ],
+  "energyCards": [
+    "FILTER.md.template",
+    "EMAIL.md.template",
+    "MESSAGE.md.template",
+    "DIGEST.md.template",
+    "SUMMARY.md.template"
+  ],
+  "scripts": [
+    "scripts/emaildeck_run.js"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_filters",
+      "to": "filters"
+    },
+    {
+      "from": "_mail-inbox",
+      "to": "mail-inbox"
+    },
+    {
+      "from": "_mail-archive",
+      "to": "mail-archive"
+    },
+    {
+      "from": "_drafts",
+      "to": "drafts"
+    },
+    {
+      "from": "digests",
+      "to": "_digests"
+    },
+    {
+      "from": "scripts",
+      "to": "_scripts"
+    }
+  ],
+  "description": "Gmail filter rules as flowdeck cards \u2014 fetch, label, and route findings to crunchdeck"
+}

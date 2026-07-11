@@ -1,0 +1,15 @@
+# Query: {{QUERY_NAME}}
+
+| Field | Value |
+|-------|-------|
+| Intent | {{INTENT}} |
+| Category | {{CATEGORY}} |
+
+## Search Terms
+
+{{TERMS}}
+
+## Run Log
+
+| Date | Results scanned | Cards created |
+|------|----------------|---------------|

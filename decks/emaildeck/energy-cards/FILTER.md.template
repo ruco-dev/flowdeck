@@ -1,0 +1,62 @@
+# Filter: {{FILTER_NAME}}
+
+## Provider
+
+> `gmail` (default) or `microsoft` (Outlook).
+> Requires: `flowdeck auth google` or `flowdeck auth microsoft`
+
+gmail
+
+<!-- Or use Microsoft Outlook:
+
+microsoft
+
+-->
+
+## Query
+
+```
+{{QUERY}}
+```
+
+<!-- Gmail syntax examples:
+from:@company.com
+from:user@example.com subject:invoice
+
+Outlook syntax examples:
+from:company.com
+from:"user@example.com" subject:invoice
+-->
+
+## Label
+
+{{LABEL}}
+
+## To Domain
+
+> Optional. Narrows the query to threads sent to a specific domain, e.g. `example.com`
+> (ANDs a `to:@<domain>` clause onto `## Query`). Leave blank to skip.
+
+## Default Tasks
+
+> Tasks below are added to every message card this filter creates.
+> Prefix lines with `BOT:` or `HUMAN:` — or leave unprefixed for HUMAN by default.
+> Available BOT actions include: `summarize`, `draft-reply`, `archive`, `mark-to-delete` (use for filters whose mail is reliably junk), `send-to-crunchdeck`.
+
+{{DEFAULT_TASKS}}
+
+## Enrichment
+
+> Optional. Describe per-thread model steps here (e.g. "classify by urgency", "summarize in one line")
+> and the filter's TODO.md will apply them to each new EMAIL.md after the runner creates it.
+> Leave blank to skip — the runner itself never calls a model.
+
+## Date Range
+
+> Optional. Leave blank to default to the last 30 days.
+> Examples: `after:2024/01/01`, `newer_than:7d`
+
+## Run Log
+
+| Date | Threads found | Labeled | Cards created |
+|------|--------------|---------|---------------|

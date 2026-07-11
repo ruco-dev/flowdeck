@@ -1,0 +1,23 @@
+# {{CONTACT_NAME}}
+
+| Field | Value |
+|-------|-------|
+| Company | {{COMPANY}} |
+| Role | {{ROLE}} |
+| Email | {{EMAIL}} |
+| Phone | {{PHONE}} |
+| Added | {{DATE}} |
+
+## Context
+
+{{CONTEXT}}
+
+## Interaction Log
+
+<!-- most recent first — format: **YYYY-MM-DD** · type (email/call/note) · summary -->
+
+## Follow-up
+
+<!-- dated next actions — format: **YYYY-MM-DD** · description -->
+
+## Notes

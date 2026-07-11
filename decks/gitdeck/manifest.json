@@ -1,0 +1,23 @@
+{
+  "name": "gitdeck",
+  "version": "0.4.0",
+  "installRoot": ".gitdeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "gitdeck-add-repo"
+  ],
+  "sleeveCards": [
+    "gitdeck-init"
+  ],
+  "energyCards": [
+    "REPO.md.template",
+    "FINDING.md.template"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_repos",
+      "to": "repos"
+    }
+  ],
+  "description": "GitHub repo vigilance — watches owned, competitor, provider, consumer, and benchmark repos; routes findings to crunchdeck"
+}

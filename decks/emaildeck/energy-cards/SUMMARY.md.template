@@ -1,0 +1,48 @@
+# Inbox summary — {{DATE}}
+
+> Thematic synthesis of the email cards in `mail-inbox/`, minted by the `summarize-inbox` action. Source cards are untouched — every claim here links back to the card it came from.
+
+## Inputs
+
+| | |
+|---|---|
+| Period | {{PERIOD}} (oldest → newest card read) |
+| Filters swept | {{FILTERS}} |
+| Cards read | {{COUNT}} ({{NEW_COUNT}} new since the previous summary) |
+| Previous summary | {{PREV_SUMMARY_LINK or "none — first summary"}} |
+
+## Themes
+
+<!--
+One ### block per theme. Every card read appears in exactly one theme (or under Noise) — no card silently dropped. Synthesis is 2–4 sentences on what the cards collectively say; Relevance is why it matters to THIS project (read the active-projects section of AGENT.md / CLAUDE.md for targets).
+-->
+
+### {{THEME_NAME}}
+
+{{SYNTHESIS — what these cards collectively say, 2–4 sentences.}}
+
+**Relevance:** {{why this theme matters for this project, 1–2 sentences.}}
+
+Cards:
+- [{{CARD_SLUG}}](../../mail-inbox/{{CARD_SLUG}}/TODO.md) — {{one-line: what this card contributes to the theme}}
+
+## Noise
+
+<!-- Cards read but off-topic for the active projects — one linked bullet each, with the reason. -->
+
+- [{{CARD_SLUG}}](../../mail-inbox/{{CARD_SLUG}}/TODO.md) — {{why it's noise}}
+
+## BOT
+
+<!-- Follow-ups promoted from HUMAN triage land here (deep-dive a theme, card an idea to another deck via `flowdeck file`). -->
+
+## HUMAN
+
+- [ ] Review the themes. Tick any follow-up and name its target:
+  - [ ] deep-dive — expand a theme with web research → note which theme:
+    > _answer:_
+  - [ ] card-to-deck — send a theme/idea to another deck (`flowdeck file <deck-path> <slug>`) → note theme + deck:
+    > _answer:_
+  - [ ] archive — mark the Noise cards' `archive` task for the next mail-archive run
+
+#### COMMENTS

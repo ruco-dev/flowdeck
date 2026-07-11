@@ -1,0 +1,34 @@
+# creamdeck — {{PROJECT_NAME}}
+
+## Project
+
+{{PROJECT_DESCRIPTION}}
+
+## Tracked Domains
+
+<!-- emaildeck filters for domains listed here should include send-to-creamdeck in their default tasks -->
+
+| Domain | Relationship |
+|--------|-------------|
+| `example.com` | Prospect — replace with real domains |
+
+## Contact Categories
+
+- **Prospects** — teams evaluating or trialing {{PROJECT_NAME}}
+- **Partners** — tool authors and integrations
+- **Community** — contributors and power users
+- **Colleagues** — internal team members and coworkers
+
+## Ticket ID
+
+Format: `{PREFIX}{DDMMYYYY}{SEQ}` — e.g. `{{TICKET_PREFIX}}29062026001`
+
+| Field | Value |
+|-------|-------|
+| Prefix | `{{TICKET_PREFIX}}` |
+| Date format | DDMMYYYY |
+| Sequence | 3-digit zero-padded, resets daily |
+
+Change `Prefix` to match your client-facing code (e.g. `XYZ`, `ACM`, `MDB`).
+
+## Notes

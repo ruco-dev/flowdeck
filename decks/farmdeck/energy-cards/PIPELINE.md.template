@@ -1,0 +1,25 @@
+# Pipeline Config
+
+## Stages
+
+| Stage | Description | Exit criteria |
+|-------|-------------|---------------|
+| Seed | Identified — no meaningful contact yet | First response or meeting booked |
+| Nurture | Engaged — active conversation or drip in progress | Qualified interest confirmed |
+| Active | Qualified — evaluating or in proposal stage | Decision reached |
+| Won | Closed successfully | — |
+| Dropped | Disqualified or abandoned | — |
+
+## Stale Threshold
+
+> A prospect is flagged as stale when their last interaction is older than this many days.
+> The pipeline overview card uses this value to surface who needs attention.
+
+14
+
+## Scoring Criteria
+
+> Optional. Define what raises or lowers a prospect's score.
+> Example: +10 opened email, +20 replied, +30 booked call, -10 no-show
+
+{{SCORING_CRITERIA}}

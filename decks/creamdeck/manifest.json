@@ -1,0 +1,47 @@
+{
+  "name": "creamdeck",
+  "version": "0.6.0",
+  "installRoot": ".creamdeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "creamdeck-add-contact",
+    "creamdeck-open-ticket"
+  ],
+  "sleeveCards": [
+    "creamdeck-init"
+  ],
+  "energyCards": [
+    "CONTACT.md.template",
+    "INBOX-ITEM.md.template",
+    "CREAMDECK.md.template",
+    "TICKET.md.template",
+    "PIPELINE.md.template"
+  ],
+  "scripts": [
+    "scripts/report.js",
+    "scripts/html.js"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_creamdeck-inbox",
+      "to": "creamdeck-inbox"
+    },
+    {
+      "from": "contacts",
+      "to": "_contacts"
+    },
+    {
+      "from": "_tickets",
+      "to": "tickets"
+    },
+    {
+      "from": "scripts",
+      "to": "_scripts"
+    },
+    {
+      "from": "report",
+      "to": "_report"
+    }
+  ],
+  "description": "Project-scoped CRM — contacts, a unified email/call inbox, and a ticket pipeline with REPORT.md + static HTML report exports"
+}

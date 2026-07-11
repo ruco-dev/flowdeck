@@ -1,0 +1,17 @@
+# {{SUBJECT}}
+
+| Field | Value |
+|-------|-------|
+| Type | {{TYPE}} |
+| Source | {{SOURCE}} |
+| Contact | {{CONTACT}} |
+| Date | {{DATE}} |
+| Status | unrouted |
+
+## Summary
+
+{{SUMMARY}}
+
+## Raw
+
+{{RAW}}

@@ -1,0 +1,12 @@
+# Prospects
+
+_Updated by playing `_prospects/TODO.md`._
+
+## Pipeline
+
+| Slug | Name | Company | Stage | Last Interaction |
+|------|------|---------|-------|-----------------|
+
+## Needs Attention
+
+_(prospects whose last interaction exceeds the stale threshold in `_pipeline/PIPELINE.md`)_

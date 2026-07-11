@@ -1,0 +1,97 @@
+# Profile: {{PRODUCT_NAME}}
+
+**Package:** {{NPM_SCOPE}}
+**Tier:** {{TIER}}
+**Status:** {{RELEASE_STATE}}
+**Updated:** {{DATE}}
+
+---
+
+<!--
+INSTRUCTIONS FOR THE MODEL:
+Output this document with every section filled in. No prose or commentary outside the structure.
+PROFILE is the SLOW-CHANGING IDENTITY layer and the SINGLE SOURCE OF TRUTH for the one-liner
+and tagline candidates. PITCHDECK and website copy must REFERENCE these, never re-type them.
+- One-liner: one sentence, customer-legible, no jargon.
+- Elevator: 2-4 sentences; what it is, who it's for, why it wins.
+- Market lane: name real competitors/categories; state the concrete point of difference.
+- Tier: "open infrastructure" or "closed vertical".
+- For genuinely unknown information write "TBD — [what needs to be decided]".
+- Remove HTML comments from the final output. Do not add, remove, or reorder sections.
+-->
+
+## Overview
+
+> {{PROMPT}}
+
+---
+
+## One-liner
+
+<!-- CANONICAL. The single sentence everything else derives from. -->
+
+{{ONE_LINER}}
+
+## Elevator Pitch
+
+<!-- 2-4 sentences. What it is, who it's for, why it wins. -->
+
+{{ELEVATOR}}
+
+## Success Signal
+
+<!-- CANONICAL north-star. ONE metric that says this product is working — not a dashboard.
+     ROADMAP outcomes reference this; the definition lives here, the targets live there. -->
+
+**North star:** {{NORTH_STAR_METRIC}}
+
+## Core Features
+
+-
+-
+-
+
+## Market Lane & Differentiation
+
+<!-- Where this sits, who else is in the lane, and the concrete edge. -->
+
+| Competitor / Category | What they do | How {{PRODUCT_NAME}} differs |
+|---|---|---|
+|  |  |  |
+
+**The edge in one line:** {{DIFFERENTIATION}}
+
+## Tagline Candidates
+
+<!-- CANONICAL. Referenced by PITCHDECK and website copy, never duplicated. -->
+
+- "{{TAGLINE_1}}"
+- "{{TAGLINE_2}}"
+- "{{TAGLINE_3}}"
+
+## Messaging
+
+<!-- Folded-in copy bank. One-liners at length, key messages, objection handling.
+     Extract into a separate MESSAGING template only if this outgrows the section. -->
+
+| Context | Copy |
+|---|---|
+| npm / README header |  |
+| Website hero |  |
+| One-sentence (canonical above) | {{ONE_LINER}} |
+| Objection → response |  |
+
+## Content Angle
+
+<!-- The lead story / launch post hook for this product. -->
+
+{{CONTENT_ANGLE}}
+
+## Open Questions
+
+<!-- When a question resolves into a decision, capture it as an ADR (_decisions/ADR-XXXX.md)
+     and link it here — keep the rationale in the ADR, not inline. -->
+
+- [ ] TODO:
+
+---

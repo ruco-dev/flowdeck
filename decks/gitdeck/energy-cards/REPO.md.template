@@ -1,0 +1,17 @@
+# Repo: {{OWNER}}/{{REPO}}
+
+| Field | Value |
+|-------|-------|
+| Category | {{CATEGORY}} |
+| Watch | {{WATCH_TYPES}} |
+
+## Watch Config
+
+> What signals matter from this repo?
+
+{{WATCH_CONFIG}}
+
+## Run Log
+
+| Date | Findings | Cards created |
+|------|----------|---------------|

@@ -1,0 +1,82 @@
+# Roadmap: {{PRODUCT_NAME}}
+
+**Package:** {{NPM_SCOPE}}
+**Updated:** {{DATE}}
+**Owner:** {{OWNER}}
+
+---
+
+<!--
+INSTRUCTIONS FOR THE MODEL:
+Output this document with every section filled in. No prose outside the structure.
+ROADMAP is FORWARD-LOOKING and COMMITTED — themes and sequence, not a candidate dump
+(that's BACKLOG) and not a backward record (that's the changesets-generated CHANGELOG).
+- Use Now / Next / Later horizons; avoid false date precision unless a date is real.
+- Each theme states an OUTCOME, not a task list.
+- Capture cross-product dependencies explicitly — this ecosystem is interdependent.
+- For genuinely unknown information write "TBD — [what needs to be decided]".
+- Remove HTML comments from the final output. Do not add, remove, or reorder sections.
+-->
+
+## Overview
+
+> {{PROMPT}}
+
+---
+
+## Horizons
+
+<!-- Outcome-oriented themes. Promote from BACKLOG; execute via flowdeck cards.
+     Each outcome is a BET: phrase it as a falsifiable hypothesis, attach the metric that
+     proves or kills it, and trace that metric to PROFILE's north star. This is the Measure
+     in Build->Measure->Learn — without it a theme is just a task list. -->
+
+### Now
+
+| Theme | Outcome | Hypothesis | Metric | Status |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+### Next
+
+| Theme | Outcome | Hypothesis | Metric | Status |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+### Later
+
+| Theme | Outcome | Hypothesis | Metric | Status |
+|---|---|---|---|---|
+|  |  |  |  |  |
+
+## Milestones
+
+<!-- Release markers. Tie to changesets versions where applicable. -->
+
+| Milestone | Target | Definition of done |
+|---|---|---|
+|  |  |  |
+
+## Dependencies
+
+<!-- Cross-product or external. e.g. "blocked on mcpster OpenAPI adapter". -->
+
+| Depends on | For | Status |
+|---|---|---|
+|  |  |  |
+
+## Explicitly Deferred
+
+<!-- Decided NOT to do soon. A deferral with real rationale becomes an ADR
+     (_decisions/ADR-XXXX.md) — link it here instead of restating the why. -->
+
+-
+
+## Open Questions
+
+<!-- When a question resolves into a decision, capture it as an ADR (_decisions/ADR-XXXX.md)
+     and link it here — keep the rationale in the ADR, not inline. -->
+
+- [ ] TODO:
+
+---

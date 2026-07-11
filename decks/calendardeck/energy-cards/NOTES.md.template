@@ -1,0 +1,9 @@
+# Notes: {{SLUG}}
+
+{{WEEKDAY}}, {{DATE_LONG}}
+
+> Meeting notes for this day. Created on demand by `sync-day` when a `notes` action
+> is played — headings are appended, never overwritten. Freeform content under each
+> heading is yours; do not remove the `<!-- evt:{id} -->` marker on a heading.
+
+## {{TIME}} {{TITLE}} <!-- evt:{{EVENT_ID}} -->

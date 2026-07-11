@@ -1,0 +1,22 @@
+# Summary: {{SLUG}}
+
+Week {{WEEK_N}} of {{MONTH_LONG}} — {{DATE_RANGE}}
+
+> Synced from Google Calendar. Do not edit — overwritten on next sync.
+
+## Events by Day
+
+{{WEEK_TABLE}}
+
+<!-- WEEK_TABLE format:
+| Day | Slug | Events |
+|-----|------|--------|
+| Mon 1 | 20260601 | Standup 10:00, Design review 14:00 |
+| Tue 2 | 20260602 | — |
+-->
+
+## Totals
+
+| Events | Busy hours |
+|--------|------------|
+| {{TOTAL_EVENTS}} | {{BUSY_HOURS}} |

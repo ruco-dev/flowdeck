@@ -1,0 +1,31 @@
+# Sync Config
+
+## Calendar ID
+
+> Optional when authenticated via `flowdeck auth google` — defaults to `primary` (your main calendar).
+> Set this to sync a specific calendar, or to a direct `.ics` URL / public Google Calendar ID for an unauthenticated read.
+> Find the ID in Google Calendar → Settings → your calendar → "Calendar ID". Example: `yourname@gmail.com` or `abc123xyz@group.calendar.google.com`
+
+{{CALENDAR_ID}}
+
+## Public Source
+
+> Optional. An additional read-only sync source — a public Google Calendar ID or a public ICS URL.
+> Public GCals (e.g. holidays, sports seasons) are fetched via their public ICS feed.
+> ICS URLs are fetched and parsed directly. Leave blank or keep the placeholder to disable.
+> Public events are marked read-only in cards; use `send-to-gcal` to copy one to your own calendar.
+> Example (US holidays): `en.usa#holiday@group.v.calendar.google.com`
+
+{{PUBLIC_SOURCE}}
+
+## Sync Range
+
+> Default range used by `.flowdeck/.calendardeck/_sync/` (the sync standing card) when no explicit range is given.
+> Examples: `current-month`, `next-30-days`, `2026-06-01–2026-06-30`
+
+{{SYNC_RANGE}}
+
+## Run Log
+
+| Date | Range | Days synced | Events fetched | Cards created | Cards updated |
+|------|-------|-------------|----------------|---------------|---------------|

@@ -1,0 +1,17 @@
+# Pipeline — {{PROJECT_NAME}}
+
+Stages flow left to right. A ticket moves forward manually; it can be sent back to any prior stage.
+
+| Stage | Meaning |
+|-------|---------|
+| New | Opened, not yet triaged |
+| Open | Triaged and actively being worked |
+| Awaiting Quote | Scoped; waiting on a quote or the contact's go-ahead before work starts |
+| Waiting | On contact reply, third party, or internal decision |
+| Blocked | Cannot proceed — external dependency or unresolved impediment |
+| Resolved | Fix or answer delivered; awaiting contact confirmation |
+| Closed | Done |
+
+## Notes
+
+<!-- Customise stages, add SLA targets, or document escalation paths here. -->

@@ -1,0 +1,54 @@
+{
+  "name": "crunchdeck",
+  "version": "0.10.0",
+  "installRoot": ".crunchdeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "crunchdeck-adr",
+    "crunchdeck-promote"
+  ],
+  "sleeveCards": [
+    "crunchdeck-init",
+    "publish-readiness-audit"
+  ],
+  "energyCards": [
+    "README.md.template",
+    "BACKLOG.md.template",
+    "PROFILE.md.template",
+    "ROADMAP.md.template",
+    "LAUNCH.md.template",
+    "ADR.md.template",
+    "STATS.md.template"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_crunchdeck-inbox",
+      "to": "crunchdeck-inbox"
+    },
+    {
+      "from": "_profile",
+      "to": "profile"
+    },
+    {
+      "from": "_backlog",
+      "to": "backlog"
+    },
+    {
+      "from": "_roadmap",
+      "to": "roadmap"
+    },
+    {
+      "from": "_stats",
+      "to": "stats"
+    },
+    {
+      "from": "decisions",
+      "to": "_decisions"
+    },
+    {
+      "from": "_launches",
+      "to": "launches"
+    }
+  ],
+  "description": "Product management — PROFILE, BACKLOG, ROADMAP, ADR, and inbox under .flowdeck/.crunchdeck/"
+}

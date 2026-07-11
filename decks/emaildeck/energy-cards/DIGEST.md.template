@@ -1,0 +1,45 @@
+# Newsletter Digest — {{ date }}
+
+**Threads processed:** {{COUNT}} ({{NEW_LABELED}} newly labeled BOT-READ)
+**Projects:** {{PROJECTS}}
+**Period:** {{PERIOD}}
+
+<!--
+One `### Item N` block per relevant thread. Pre-select the triage checkboxes by
+signal type (the operator verifies/overrides). Add a `_(comment: ...)_` after any
+box to scope the action (Deep focus, Skill target, AddCard brief).
+Delete never removes mail — it marks the thread for the human to bulk-delete.
+-->
+
+---
+
+### Item 1 — {{ITEM_TITLE}}
+**Source:** {{SOURCE}} · Thread `{{THREAD_ID}}`
+**Projects:** {{PROJECT_TAGS}}
+
+{{3–5 sentence distillation focused on project-relevant signals.}}
+
+**Triage:**
+- [ ] Keep — apply `TO-READ`
+- [ ] Deep — expanded research → `_digests/deep/{{ date }}-<slug>.md` _(comment: focus)_
+- [ ] Delete — apply `DELETE` (human bulk-deletes; never permanent here)
+- [ ] Skill — mdblu `/add-skill` PR (public) or host local skills dir (private) _(visibility: public|private) (target: new|existing)_
+- [ ] AddCard — `flowdeck file <deck-path> <slug>` _(comment: brief)_
+
+---
+
+<!-- repeat the ### Item block per thread -->
+
+## Noise (labeled BOT-READ, no signal)
+
+<!-- threads processed + labeled but off-topic; one bullet each -->
+
+- {{NOISE_ITEM}}
+
+## Suggested Pre-Selected Triage Defaults
+
+> Based on signal type — the operator should verify.
+
+| # | Item | Suggested |
+|---|------|-----------|
+| 1 | {{ITEM_TITLE}} | {{DEFAULT}} |

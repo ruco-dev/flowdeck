@@ -1,0 +1,22 @@
+# {{SUBJECT}}
+
+| Field | Value |
+|-------|-------|
+| From | {{FROM}} |
+| Date | {{DATE}} |
+| Thread ID | {{THREAD_ID}} |
+| Label applied | {{LABEL}} |
+| Filter | {{FILTER_NAME}} |
+| Ticket | — |
+
+## Snippet
+
+{{SNIPPET}}
+
+## Body
+
+{{BODY}}
+
+## Thread URL
+
+https://mail.google.com/mail/u/0/#inbox/{{THREAD_ID}}

@@ -1,0 +1,13 @@
+# {{SUBJECT}}
+
+| Field | Value |
+|-------|-------|
+| To | {{TO}} |
+| Cc | {{CC}} |
+| Bcc | {{BCC}} |
+| Subject | {{SUBJECT}} |
+| Gmail draft ID | <!-- populated by push-to-gmail; empty until pushed --> |
+
+## Body
+
+{{BODY}}

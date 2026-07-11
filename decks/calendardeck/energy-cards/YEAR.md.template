@@ -1,0 +1,20 @@
+# Summary: {{YYYY}}
+
+> Synced from Google Calendar. Do not edit — overwritten on next sync.
+
+## Events by Month
+
+{{YEAR_TABLE}}
+
+<!-- YEAR_TABLE format:
+| Month | Slug | Events | Busy hours |
+|-------|------|--------|------------|
+| January | 202601 | 42 | 38h |
+| February | 202602 | 37 | 31h |
+-->
+
+## Totals
+
+| Events | Busy hours | Busiest month |
+|--------|------------|---------------|
+| {{TOTAL_EVENTS}} | {{BUSY_HOURS}} | {{BUSIEST_MONTH}} |

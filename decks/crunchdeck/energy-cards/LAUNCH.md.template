@@ -1,0 +1,86 @@
+# Launch: {{PRODUCT_NAME}}
+
+**Package:** {{NPM_SCOPE}}
+**Target date:** {{TARGET_DATE}}
+**Owner:** {{OWNER}}
+**Status:** Preparing
+
+---
+
+<!--
+INSTRUCTIONS FOR THE MODEL:
+Output this document with every section filled in. No prose outside the structure.
+LAUNCH is PER-LAUNCH, not per-product — instantiate it at ship time, archive it after.
+It is an operational gate, not a strategy doc: it pulls from PROFILE / ROADMAP / PITCHDECK,
+it does not restate them.
+- Copy (one-liner, tagline) comes FROM PROFILE — reference, never re-author.
+- Check items are binary and verifiable. If it can't be checked off, reword it.
+- For genuinely unknown information write "TBD — [what needs to be decided]".
+- Remove HTML comments from the final output. Do not add, remove, or reorder sections.
+-->
+
+## Overview
+
+> {{PROMPT}}
+
+---
+
+## Product
+
+- [ ] Published to npm under correct scope ({{NPM_SCOPE}})
+- [ ] Version tagged via changesets; CHANGELOG generated
+- [ ] Install + quickstart verified from a clean environment
+- [ ] Breaking changes documented
+
+## Docs
+
+- [ ] README reflects the current API
+- [ ] mdblu-served docs updated
+- [ ] A working example / demo exists
+
+## Distribution
+
+- [ ] Launch post drafted (content angle from PROFILE; narrative from PITCHDECK)
+- [ ] Channels chosen: {{CHANNELS}}
+- [ ] Cross-links to dependent products in the ecosystem
+
+## Brand & Copy
+
+- [ ] One-liner + tagline pulled from PROFILE (not rewritten)
+- [ ] Logo / mark assets ready at required sizes
+
+## Measurement
+
+<!-- Closes the loop: you can't learn from a launch you didn't instrument. -->
+
+- [ ] North-star signal instrumented (defined in PROFILE)
+- [ ] Baseline captured before launch
+
+## Go / No-Go
+
+| Gate | Owner | Decision |
+|---|---|---|
+| All checklist sections green |  | Go / No-Go |
+
+## Kill / Rollback Criteria
+
+<!-- Decide the abort conditions BEFORE launch, not during. -->
+
+- **Rollback if:**
+- **How:**
+
+## Post-Launch Watch
+
+| Window | Watch | Signal |
+|---|---|---|
+| First 48h |  |  |
+| First 2 weeks |  |  |
+
+## Open Questions
+
+<!-- When a question resolves into a decision, capture it as an ADR (_decisions/ADR-XXXX.md)
+     and link it here — keep the rationale in the ADR, not inline. -->
+
+- [ ] TODO:
+
+---

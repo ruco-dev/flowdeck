@@ -1,0 +1,17 @@
+# {{TITLE}}
+
+| Field | Value |
+|-------|-------|
+| Repo | {{OWNER}}/{{REPO}} |
+| Category | {{CATEGORY}} |
+| Type | {{TYPE}} |
+| Date | {{DATE}} |
+| URL | {{URL}} |
+
+## Summary
+
+{{SUMMARY}}
+
+## Relevance
+
+{{RELEVANCE}}

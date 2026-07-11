@@ -1,0 +1,12 @@
+{
+  "name": "notedeck",
+  "version": "0.2.0",
+  "installRoot": ".notedeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [],
+  "sleeveCards": [
+    "notedeck-init"
+  ],
+  "energyCards": [],
+  "description": "Freeform notes as flowdeck cards under .flowdeck/.notedeck/"
+}

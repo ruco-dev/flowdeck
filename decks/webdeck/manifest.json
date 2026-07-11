@@ -1,0 +1,23 @@
+{
+  "name": "webdeck",
+  "version": "0.4.0",
+  "installRoot": ".webdeck",
+  "agentMd": "AGENT.md",
+  "blueprints": [
+    "webdeck-add-query"
+  ],
+  "sleeveCards": [
+    "webdeck-init"
+  ],
+  "energyCards": [
+    "QUERY.md.template",
+    "FINDING.md.template"
+  ],
+  "renameRegistry": [
+    {
+      "from": "_queries",
+      "to": "queries"
+    }
+  ],
+  "description": "Web search signals — runs configured queries and routes findings to crunchdeck"
+}

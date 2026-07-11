@@ -1,0 +1,36 @@
+# {{PRODUCT_NAME}} Package Stats Dashboard
+
+**Snapshot date:** —
+**Projects tracked:** 0
+
+---
+
+## Packages
+
+| Package | npm handle | GitHub repo | Type |
+|---------|-----------|-------------|------|
+<!-- add sources: one row per source; keep the trends section in sync -->
+
+---
+
+## Weekly Stats Snapshot
+
+| Package | Weekly DL | Monthly DL | Stars | Issues | Forks | Version | Published |
+|---------|-----------|------------|-------|--------|-------|---------|-----------|
+<!-- add sources: one row per source; keep the trends section in sync -->
+
+---
+
+## Trends
+
+First snapshot — no prior data to compare. Next run will show week-over-week deltas.
+
+---
+
+## Notes
+
+*Run `flowdeck play _stats/update-dashboard` to populate this file.*
+
+---
+
+*Made with [mdblu](https://github.com/ruco-ai/mdblu) · source: `energy-cards/STATS.md.template`*

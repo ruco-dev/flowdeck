@@ -1,0 +1,25 @@
+# {{TICKET_TITLE}}
+
+| Field | Value |
+|-------|-------|
+| ID | {{TICKET_ID}} |
+| Priority | {{PRIORITY}} |
+| Stage | {{STAGE}} |
+| Contact | {{CONTACT}} |
+| Source email | {{SOURCE_EMAIL}} |
+| Opened | {{DATE}} |
+| Closed | — |
+| Hours Est. | |
+| Hours Real | |
+
+## Description
+
+{{DESCRIPTION}}
+
+## Updates
+
+<!-- most recent first — format: **YYYY-MM-DD** · summary -->
+
+## Resolution
+
+<!-- populated when ticket is closed -->
