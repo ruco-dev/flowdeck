@@ -72,7 +72,7 @@ recurrence: on-demand
     - **Tier 3 — public ICS** (last resort, unauthenticated):
       `GET https://calendar.google.com/calendar/ical/ENCODED_ID/public/basic.ics`
       If 2xx: parse the ICS feed for `VEVENT` entries within `timeMin`–`timeMax` (compare against `DTSTART`). Note: personal calendar ICS feeds are often stale — run `flowdeck auth google` once for reliable sync.
-      If 403/404: stop and note under `## HUMAN` to run `flowdeck auth google` to authorize, then replay this card. If Google blocks the sign-in, the user may not be on the beta tester list — ask them to email validator-mc@ruco.pt.
+      If 403/404: stop and note under `## HUMAN` to run `flowdeck auth google` to authorize, then replay this card. If Google blocks the sign-in, the user may not be on the beta tester list — ask them to email hello@ruco.dev.
 
   - [ ] **If `Public Source` is set** (non-blank, non-placeholder): fetch via ICS (public holiday calendars work reliably without auth).
     - If it looks like a calendar ID (contains `@`): fetch `https://calendar.google.com/calendar/ical/ENCODED_ID/public/basic.ics`.
@@ -201,7 +201,7 @@ recurrence: on-demand
 
   ## HUMAN
 
-  - [ ] Configure `.flowdeck/.calendardeck/_sync/SYNC.md` before syncing, then authorize Google Calendar by running `flowdeck auth google` in the terminal (a browser opens — click Allow; one-time per machine). `Calendar ID` is optional when authenticated — it defaults to `primary` (your main calendar); set it only to target a specific calendar, or to a direct `.ics` URL / public Google Calendar ID for an unauthenticated read. Set `Sync Range` to the desired range (e.g. `current-month`). **Note:** calendardeck is in private beta — if Google blocks the sign-in, email validator-mc@ruco.pt to be added as a tester.
+  - [ ] Configure `.flowdeck/.calendardeck/_sync/SYNC.md` before syncing, then authorize Google Calendar by running `flowdeck auth google` in the terminal (a browser opens — click Allow; one-time per machine). `Calendar ID` is optional when authenticated — it defaults to `primary` (your main calendar); set it only to target a specific calendar, or to a direct `.ics` URL / public Google Calendar ID for an unauthenticated read. Set `Sync Range` to the desired range (e.g. `current-month`). **Note:** calendardeck is in private beta — if Google blocks the sign-in, email hello@ruco.dev to be added as a tester.
 
   <!-- Optional: specify an explicit sync range.
   range: YYYY-MM-DD–YYYY-MM-DD
@@ -217,7 +217,7 @@ recurrence: on-demand
 
   ## Beta access
 
-  calendardeck is in private beta. To request access, email validator-mc@ruco.pt — you will be added as a tester and can then authorize via `flowdeck auth google`.
+  calendardeck is in private beta. To request access, email hello@ruco.dev — you will be added as a tester and can then authorize via `flowdeck auth google`.
 
   ## Slugs
   - Day:   YYYYMMDD   (e.g. 20260601)
@@ -233,7 +233,7 @@ recurrence: on-demand
 
 - [ ] Surface under `## HUMAN`:
   - Path to `_sync/SYNC.md`. Calendar ID defaults to `primary` (main calendar) when authenticated — change it only to target a different calendar, a public GCal ID, or a direct `.ics` URL. Set `Sync Range` and optionally `Public Source` (a public GCal ID or ICS URL — defaults to US holidays; leave blank to disable).
-  - Reminder to authorize Google Calendar before playing the root card: run `flowdeck auth google` in the terminal. A browser will open — click Allow. One-time per machine. **Note:** calendardeck is in private beta — if Google blocks the sign-in, email validator-mc@ruco.pt to be added as a tester.
+  - Reminder to authorize Google Calendar before playing the root card: run `flowdeck auth google` in the terminal. A browser will open — click Allow. One-time per machine. **Note:** calendardeck is in private beta — if Google blocks the sign-in, email hello@ruco.dev to be added as a tester.
 
 - [ ] Commit **only if this replay changed anything** (a repair replay on an already-scaffolded project produces no diff): `git add .flowdeck/.calendardeck && git diff --cached --quiet || git commit -m "deck: init calendardeck"`.
 

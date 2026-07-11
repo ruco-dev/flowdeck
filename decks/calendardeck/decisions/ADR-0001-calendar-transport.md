@@ -66,7 +66,7 @@ Browser-OAuth is already implemented and shipped in the flowdeck CLI (`flowdeck 
 
 - calendardeck has one coherent, documented transport story: REST v3 over browser-OAuth for the user's calendar, ICS for public sources
 - The deck templates, blueprint, and AGENT docs now describe the restored two-tier design accurately, with no contradictory "ICS-only / not supported" wording
-- The private-beta `validator-mc@ruco.pt` tester gate is restored alongside the OAuth sign-in it gates
+- The private-beta tester gate is restored alongside the OAuth sign-in it gates
 
 ### Negative
 
@@ -82,7 +82,7 @@ Browser-OAuth is already implemented and shipped in the flowdeck CLI (`flowdeck 
 - Supersedes the discarded `calendardeck-switch-mcp` card (which introduced the MCP server) and corrects commit `e3b2911`, which over-removed the OAuth/REST path.
 - `SYNC-TODO.md.template`: restored the token-first OAuth REST v3 fetch with token refresh against `oauth2.googleapis.com/token`, kept the direct-`.ics`-URL shortcut and the no-token ICS fallback, kept the public source on ICS, and restored the `send-to-gcal` / `sync-day` action scaffolds.
 - `AGENT.md` and `AGENT-section.md`: restored the `send-to-gcal` and `sync-day` action specs, with write-back re-pointed from `mcp__google_calendar__create_event` to an authenticated `POST https://www.googleapis.com/calendar/v3/calendars/{id}/events`.
-- `SYNC.md.template`, `calendardeck-init/TODO.md`, `DECKS.md`, and the four `*.md.template` headers: restored Google Calendar / OAuth wording, the `primary` default, and the `validator-mc@ruco.pt` beta note.
+- `SYNC.md.template`, `calendardeck-init/TODO.md`, `DECKS.md`, and the four `*.md.template` headers: restored Google Calendar / OAuth wording, the `primary` default, and the beta-access note.
 - Verification (grep-only): denylist `cocal | google-calendar-mcp | mcp__google_calendar | create_event | credentials.json | api-key` returns no matches across `decks/calendardeck/`; the browser-OAuth surface (`oauth`, `flowdeck auth`, `googleapis.com/calendar/v3`, `oauth2.googleapis.com/token`, `send-to-gcal`) is present and intended to stay.
 
 ---
