@@ -31,8 +31,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - **Deck naming rule: `_` reserved for piles** — `rename-default-columns` prefixed every deck-scaffolded structural folder with `_` (~29 folders across 9 decks), making init-created containers distinct from per-record content folders. Migration via `flowdeck update <deck>` using each manifest's `renameRegistry`.
 
-- **seodeck v0.1.0** — Ninth deck: SEO/content operations installed into website repos. Two blueprints consuming mdblu marketing skills via `skills:` frontmatter — `seodeck-audit-page` and `seodeck-plan-content` — each writing dated folder cards under `.seodeck/audits/` / `.seodeck/plan/`. `seodeck-init` sleeve ritual scaffolds the two instrument folder cards plus ACTIONS.md/README.md/AGENT.md.
-
 - **emaildeck-digest** (emaildeck v0.7.0) — `emaildeck-digest` blueprint (`lifecycle: recurring`, `recurrence: on-demand`, `skills: content-digest`). Provider-aware fetch reusing emaildeck's Gmail/Outlook auth → distil against the host's active-projects list → write a dated `digests/<YYYY-MM-DD>.md` from a new `DIGEST.md.template` energy card. First `decks/*/blueprints/` card to carry YAML frontmatter; `decks-lint` Check 5 updated to read frontmatter `lifecycle:` with HTML-comment fallback.
 
 - **`skills:` frontmatter convention** — New card-frontmatter key hooking flowdeck's lifecycle (deal/stock tags, play applies, meld harvests) to the mdblu skills library. `AGENT.md` gained a `## Skills` section; `TODO.md.template` and `new-deck` blueprint carry a matching hint. Harvest is advisory in v1 (not meld-blocking).

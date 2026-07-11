@@ -18,7 +18,6 @@ See [DECKS.md](DECKS.md) for the full registry, install instructions, and contri
 | [`creamdeck`](decks/creamdeck/) | Project-scoped CRM — contacts, unified inbox, a ticket pipeline with report exports, and `add-meeting` scheduling into calendardeck |
 | [`calendardeck`](decks/calendardeck/) | Google Calendar events as flowdeck cards, with a token → MCP → ICS sync fallback and a flat quick-event convention |
 | [`farmdeck`](decks/farmdeck/) | Prospection pipeline — Seed → Nurture → Active → Won |
-| [`seodeck`](decks/seodeck/) | SEO/content operations for website repos — page audits and content planning via mdblu skills |
 
 ## Install a deck
 
