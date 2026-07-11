@@ -104,7 +104,7 @@ Every blueprint's `TODO.md` declares its lifecycle on line 2 as an HTML comment:
 | `standing` | Persistent runtime card scaffolded once at init; replayed in place. | never | no — convention |
 
 Only `recurring` has engine behavior: after a recurring card is played, flowdeck resets
-its `## BOT` checkboxes and does not meld it (`flowdeck-cli` matches
+its `## BOT` checkboxes and does not meld it (the CLI engine matches
 `<!-- lifecycle: recurring -->` explicitly). The other three are documentary conventions
 the play/turn agent reads — the CLI neither validates nor switches on them.
 
