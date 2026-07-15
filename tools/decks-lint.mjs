@@ -24,7 +24,7 @@ const REQUIRED_ARRAY_KEYS = ['blueprints', 'energyCards']
 // comment — checkLifecycle reads `lifecycle:` from the frontmatter block in that case.
 const CANONICAL_LIFECYCLES = new Set(['idempotent', 'one-shot', 'recurring', 'standing', 'ritual'])
 // Files/dirs under a deck root that are legitimately not listed in the manifest.
-const ORPHAN_EXEMPT = new Set(['manifest.json', 'AGENT.md', 'AGENT-section.md', 'decisions'])
+const ORPHAN_EXEMPT = new Set(['manifest.json', 'AGENT.md', 'AGENT-section.md', 'README.md', 'decisions'])
 
 const findings = []
 function report(deck, check, message, severity = 'error') {
@@ -228,10 +228,15 @@ function checkCrossrefs(deck, root, manifest) {
       }
     }
 
+    // Two valid `_scripts/` reference shapes: the shared `_scripts/<deck>/<script>`
+    // path (decks without an installRoot), or `_scripts/<script>` when the deck
+    // installs its scripts under its own installRoot (.<deck>/_scripts/<script>).
+    const scriptBases = new Set((manifest && Array.isArray(manifest.scripts) ? manifest.scripts : []).map(s => s.split('/').pop()))
     for (const m of text.matchAll(/_scripts\/([A-Za-z0-9._-]+)(\/[A-Za-z0-9._-]*)?/g)) {
-      const refDeck = m[1]
-      if (refDeck !== deck || !hasScripts) {
-        report(deck, 'blueprint-crossref', `${e.name} references "_scripts/${refDeck}/…" but this deck ships no matching scripts[]`)
+      const ref = m[1]
+      const ok = hasScripts && (ref === deck || scriptBases.has(ref))
+      if (!ok) {
+        report(deck, 'blueprint-crossref', `${e.name} references "_scripts/${ref}" but this deck ships no matching scripts[]`)
       }
     }
   }
