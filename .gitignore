@@ -6,6 +6,7 @@ LOCAL-DECKS.md
 decks/seodeck/
 decks/postdeck/
 decks/sitedeck/
+decks/founderdeck/
 
 # Personal Claude config (shared settings.json stays tracked)
 .claude/settings.local.json
