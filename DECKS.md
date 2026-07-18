@@ -68,11 +68,14 @@ This split cleanly separates concerns: scripts handle reproducible mechanical in
   "blueprints": ["<name>-init", "<name>-add-<item>"],
   "energyCards": ["ITEM.md.template"],
   "scripts": ["scripts/tool.js"],
+  "tracking": ["POLICY-DOC.md"],
   "description": "one-line deck description"
 }
 ```
 
 `scripts` is optional — list any runtime helper scripts the deck ships (relative to the deck root). `flowdeck install` copies them into the project's `_scripts/<name>/` runtime prefix (the same convention as `_energy-cards/`), and the deck's init blueprint moves them into the deck's working directory.
+
+`tracking` is optional — list any extra deck-root files that are neither templates (`energyCards`) nor scripts (`scripts`) but still belong to the deck (e.g. standing policy/reference docs). Without it the linter flags such files as unexpected top-level entries.
 
 ### Card anatomy
 
@@ -145,9 +148,9 @@ node tools/decks-lint.mjs
 ```
 
 It reports a finding and exits non-zero for any of: a manifest missing a required field
-(`name`, `version`, `agentMd`, `blueprints`, `energyCards`, `description`; `scripts` is
-optional); a manifest entry that does not resolve to a file, or a file not listed in the
-manifest (orphan); an `AGENT-section.md` that is not a single `## ` heading subtree; an
+(`name`, `version`, `agentMd`, `blueprints`, `energyCards`, `description`; `scripts` and
+`tracking` are optional); a manifest entry that does not resolve to a file, or a file not
+listed in the manifest (orphan); an `AGENT-section.md` that is not a single `## ` heading subtree; an
 energy-card carrying YAML frontmatter; a blueprint `TODO.md` whose line 2 is not a valid
 `<!-- lifecycle: … -->` marker; a `_energy-cards/*` or `_scripts/*` reference inside a
 blueprint that does not resolve; or a registry row in this file (or in the

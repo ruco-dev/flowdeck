@@ -71,6 +71,9 @@ function checkManifest(deck, root) {
   if ('scripts' in manifest && !Array.isArray(manifest.scripts)) {
     report(deck, 'manifest-completeness', `optional key "scripts" must be an array when present`)
   }
+  if ('tracking' in manifest && !Array.isArray(manifest.tracking)) {
+    report(deck, 'manifest-completeness', `optional key "tracking" must be an array when present`)
+  }
   if (typeof manifest.name === 'string' && manifest.name !== deck) {
     report(deck, 'manifest-completeness', `manifest name "${manifest.name}" does not match directory "${deck}"`)
   }
@@ -84,6 +87,9 @@ function checkFilesystem(deck, root, manifest) {
   const energyCards = Array.isArray(manifest.energyCards) ? manifest.energyCards : []
   const scripts = Array.isArray(manifest.scripts) ? manifest.scripts : []
   const sleeveCards = Array.isArray(manifest.sleeveCards) ? manifest.sleeveCards : []
+  // `tracking` declares extra deck-root files that are neither templates nor scripts
+  // (e.g. founderdeck's ORG-INSTRUCTIONS.md / POLICY-MANUAL.md policy docs).
+  const tracking = Array.isArray(manifest.tracking) ? manifest.tracking : []
 
   // Forward: every listed entry resolves to a file on disk.
   for (const bp of blueprints) {
@@ -109,6 +115,11 @@ function checkFilesystem(deck, root, manifest) {
   if (typeof manifest.agentMd === 'string' && !exists(path.join(root, manifest.agentMd))) {
     report(deck, 'manifest-filesystem', `agentMd "${manifest.agentMd}" does not exist`)
   }
+  for (const t of tracking) {
+    if (!exists(path.join(root, t))) {
+      report(deck, 'manifest-filesystem', `tracked file "${t}" listed in tracking[] but does not exist`)
+    }
+  }
 
   // Reverse: no orphan files.
   for (const e of listDir(path.join(root, 'blueprints'))) {
@@ -133,8 +144,9 @@ function checkFilesystem(deck, root, manifest) {
   }
   // Any deck-root entry that is neither a manifest field nor an exempt file.
   const knownDirs = new Set(['blueprints', 'energy-cards', 'scripts', 'sleeve-cards'])
+  const knownFiles = new Set(tracking)
   for (const e of listDir(root)) {
-    if (e.name.startsWith('.') || ORPHAN_EXEMPT.has(e.name) || knownDirs.has(e.name)) continue
+    if (e.name.startsWith('.') || ORPHAN_EXEMPT.has(e.name) || knownDirs.has(e.name) || knownFiles.has(e.name)) continue
     report(deck, 'manifest-filesystem', `unexpected top-level entry "${e.name}" — not a manifest field or known file`)
   }
 }
