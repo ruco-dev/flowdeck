@@ -1,6 +1,6 @@
 {
   "name": "seodeck",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "installRoot": ".seodeck",
   "agentMd": "AGENT.md",
   "blueprints": [
@@ -17,7 +17,8 @@
     "scripts/seodeck_wayback.js",
     "scripts/seodeck_redirect_export.js",
     "scripts/seodeck_verify_redirects.js",
-    "scripts/seodeck_sitemap_diff.js"
+    "scripts/seodeck_sitemap_diff.js",
+    "scripts/seodeck_indexability.js"
   ],
   "energyCards": [
     "AUDIT-REPORT.md.template",

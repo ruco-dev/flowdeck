@@ -16,6 +16,11 @@ between the two sets is what routine 2 (`seodeck-sitemap-gsc-diff`) investigates
   `node .flowdeck/.seodeck/_scripts/seodeck_error404.js --in .flowdeck/.seodeck/sitemap/sitemap-urls.csv --out .flowdeck/.seodeck/sitemap/sitemap-status.csv --redirects .flowdeck/.seodeck/sitemap/sitemap-redirects.md --concurrency 5 --timeout 20000`
   Lower concurrency and higher timeout are intentional for large sitemaps (big-list lesson: servers rate-limit aggressive fetchers).
 
+- [ ] **Check indexability** of all URLs that came back 200 with no redirect in the previous step:
+  `node .flowdeck/.seodeck/_scripts/seodeck_indexability.js --in .flowdeck/.seodeck/sitemap/sitemap-urls.csv --out .flowdeck/.seodeck/sitemap/sitemap-indexability.csv --report .flowdeck/.seodeck/sitemap/sitemap-indexability-report.md --concurrency 5 --timeout 20000`
+  Report: verdict breakdown (indexable / non-indexable). Any non-indexable result is a sitemap defect — a URL the sitemap advertises but Googlebot cannot or will not index.
+  For authoritative GSC confirmation on flagged URLs, add `--inspect --site <property>` (existing `webmasters.readonly` token is sufficient — no re-consent needed; quota: 2000/day + 600/min per property, safe since only flagged URLs are inspected, never the full list).
+
 - [ ] **Classify and report** (sitemap-specific semantics — stricter than `error404/`):
   Read `sitemap-status.csv`. Classify each row:
   - `ok` (status 200, `redirected = false`) — correctly advertised; no action.
@@ -34,6 +39,7 @@ between the two sets is what routine 2 (`seodeck-sitemap-gsc-diff`) investigates
 <!-- Move an item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
 
 - [ ] diff-gsc — compare this sitemap set against the GSC "Top internally-linked pages" export already in `../internal-links/`: `node .flowdeck/.seodeck/_scripts/seodeck_sitemap_diff.js --sitemap .flowdeck/.seodeck/sitemap/sitemap-urls.csv --gsc .flowdeck/.seodeck/internal-links/internal-links.csv --out .flowdeck/.seodeck/sitemap/sitemap-gsc-diff.md` (if `sitemap-urls.csv` is stale, pass the origin instead: `--sitemap https://example.com`)
+- [ ] check-indexability — run `seodeck_indexability.js` on `sitemap-urls.csv` (regenerate with `site_checks sitemap --out` if stale)
 - [ ] re-check-errors — re-run the checker for only the `error` rows at `--concurrency 2 --timeout 30000`
 - [ ] export-sitemap-fixes — write the `## SITEMAP FIXES` list as a `sitemap-fixes.md` table the human applies to the sitemap source
 - [ ] export-rankmath — turn `sitemap-redirects.md` (broken URLs) into `redirects-rankmath.json`: `node .flowdeck/.seodeck/_scripts/seodeck_redirect_export.js --in .flowdeck/.seodeck/sitemap/sitemap-redirects.md --format rankmath`

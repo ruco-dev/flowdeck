@@ -72,6 +72,7 @@ cross-checks the sitemap (broken URLs still advertised).
 | `seodeck_wayback.js` | recover a dead page's title/keywords from the Internet Archive |
 | `seodeck_redirect_export.js` | redirect plan → `redirects.htaccess` / `redirects-rankmath.json` |
 | `seodeck_verify_redirects.js` | post-import check: each source now 301s to its destination |
+| `seodeck_indexability.js` | per-URL indexability: noindex header/meta, robots.txt block, canonical drift; `--inspect` adds GSC URL Inspection for flagged URLs |
 | `seodeck_sitemap_diff.js` | sitemap ↔ GSC internal-links diff: orphan candidates + sitemap gaps + optional impressions enrichment |
 
 Full command reference and conventions are in [`AGENT.md`](AGENT.md).
@@ -79,11 +80,11 @@ Full command reference and conventions are in [`AGENT.md`](AGENT.md).
 ## Layout
 
 ```
-manifest.json          — deck manifest (v0.7.0)
+manifest.json          — deck manifest (v0.8.0)
 AGENT.md               — deck context, installed to .seodeck/AGENT.md
 AGENT-section.md       — appended to the project .flowdeck/AGENT.md on install
 blueprints/            — seodeck-audit-page, seodeck-plan-content
 sleeve-cards/          — seodeck-init (the install/repair ritual)
-scripts/               — the six data scripts above
+scripts/               — the eight data scripts above
 energy-cards/          — AUDIT-REPORT / CONTENT-PLAN templates + instrument card bodies
 ```
