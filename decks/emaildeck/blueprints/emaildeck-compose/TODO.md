@@ -11,11 +11,11 @@ lifecycle: one-shot
 
 - [ ] Read `## HUMAN` below for slug, To, Cc, Bcc, Subject, and Body. Subject and To are required — stop and surface any missing required values under `## HUMAN`. Cc/Bcc may be left blank.
 
-- [ ] Create `.flowdeck/.emaildeck/drafts/{{SLUG}}/`.
+- [ ] Create `.flowdeck/.emaildeck/local_drafts/{{SLUG}}/`.
 
 - [ ] Scaffold `MESSAGE.md` from `_energy-cards/MESSAGE.md.template` — substitute `{{TO}}`, `{{CC}}`, `{{BCC}}`, `{{SUBJECT}}`, `{{BODY}}`. Leave the `Gmail draft ID` row empty.
 
-- [ ] Create `TODO.md` in `.flowdeck/.emaildeck/drafts/{{SLUG}}/`:
+- [ ] Create `TODO.md` in `.flowdeck/.emaildeck/local_drafts/{{SLUG}}/`:
 
   ```markdown
   # {{SUBJECT}}
@@ -36,7 +36,7 @@ lifecycle: one-shot
   #### COMMENTS
   ```
 
-- [ ] Commit: `git add .flowdeck/.emaildeck/drafts/{{SLUG}} && git commit -m "deck: compose email draft — {{SLUG}}"`.
+- [ ] Commit: `git add .flowdeck/.emaildeck/local_drafts/{{SLUG}} && git commit -m "deck: compose email draft — {{SLUG}}"`.
 
 ## HUMAN
 

@@ -1,0 +1,24 @@
+# {{INVOICE_TITLE}}
+
+| Field | Value |
+|-------|-------|
+| ID | {{INVOICE_ID}} |
+| Proposal | {{PROPOSAL_ID}} |
+| Request Note | {{REQUEST_NOTE_ID}} |
+| Contact | {{CONTACT}} |
+| Status | {{STATUS}} |
+| Date | {{DATE}} |
+| Due Date | {{DUE_DATE}} |
+| Currency | {{CURRENCY}} |
+| Paid | — |
+
+## Items
+
+<!-- lines traced to an approved proposal item keep their Hash; ad hoc lines leave it blank -->
+
+| # | Description | Qty | Unit Price | Total | Hash |
+|---|--------------|-----|------------|-------|------|
+
+## Notes
+
+{{NOTES}}

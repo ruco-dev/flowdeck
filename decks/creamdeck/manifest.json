@@ -1,11 +1,12 @@
 {
   "name": "creamdeck",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "installRoot": ".creamdeck",
   "agentMd": "AGENT.md",
   "blueprints": [
     "creamdeck-add-contact",
-    "creamdeck-open-ticket"
+    "creamdeck-open-ticket",
+    "creamdeck-new-proposal"
   ],
   "sleeveCards": [
     "creamdeck-init"
@@ -15,11 +16,16 @@
     "INBOX-ITEM.md.template",
     "CREAMDECK.md.template",
     "TICKET.md.template",
-    "PIPELINE.md.template"
+    "PIPELINE.md.template",
+    "PROPOSAL.md.template",
+    "REQUEST-NOTE.md.template",
+    "INVOICE.md.template"
   ],
   "scripts": [
     "scripts/report.js",
-    "scripts/html.js"
+    "scripts/html.js",
+    "scripts/approve-proposal.js",
+    "scripts/export-invoice.js"
   ],
   "renameRegistry": [
     {
@@ -43,5 +49,5 @@
       "to": "_report"
     }
   ],
-  "description": "Project-scoped CRM — contacts, a unified email/call inbox, and a ticket pipeline with REPORT.md + static HTML report exports"
+  "description": "Project-scoped CRM — contacts, a unified email/call inbox, a ticket pipeline with REPORT.md + static HTML report exports, and a proposal → request note → invoice billing chain with per-item approval hashes"
 }

@@ -15,7 +15,7 @@ recurrence: on-demand
   - `.flowdeck/.emaildeck/_filters/` → `.flowdeck/.emaildeck/filters/`
   - `.flowdeck/.emaildeck/_mail-inbox/` → `.flowdeck/.emaildeck/mail-inbox/`
   - `.flowdeck/.emaildeck/_mail-archive/` → `.flowdeck/.emaildeck/mail-archive/`
-  - `.flowdeck/.emaildeck/_drafts/` → `.flowdeck/.emaildeck/drafts/`
+  - `.flowdeck/.emaildeck/_drafts/` → `.flowdeck/.emaildeck/local_drafts/`
 
   Then apply the two **legacy forward renames** that remain valid (pre-0.8.0 installs where these were plain; `digests`/`scripts` are genuine piles and keep the `_`): same both-exist→surface-conflict rule.
   - `.flowdeck/.emaildeck/digests/` → `.flowdeck/.emaildeck/_digests/`
@@ -23,19 +23,25 @@ recurrence: on-demand
   - `.flowdeck/_sleeve/emaildeck-init/` → `.flowdeck/.emaildeck/_sleeve/emaildeck-init/` (sleeve cards moved from the board's root `_sleeve/` into each deck's own — `flowdeck update emaildeck` also performs this relocation itself)
   After any move, update literal old-path references inside the migrated instance's own files (instrument `TODO.md`s, config/index docs) to the new paths; the instance's `AGENT.md` copies are refreshed from the deck package by `flowdeck update emaildeck` itself.
 
+- [ ] **Migrate the draft-lifecycle folders to the split names** (0.9.x taxonomy — the outbound pipeline is now `local_drafts/` → `pushed_drafts/` → `sent/`). Same rule as above: if the old path exists and the new one does not, rename it (`git mv`, or plain `mv` if untracked); if both exist, surface the conflict under `## HUMAN`; if only-new or neither, skip. `flowdeck update emaildeck` performs these via the manifest `renameRegistry`; this step covers a repair-replay done before an update, so the folder-creation step below never leaves an orphaned `drafts/`/`pushed/` beside the new names.
+  - `.flowdeck/.emaildeck/drafts/` → `.flowdeck/.emaildeck/local_drafts/`
+  - `.flowdeck/.emaildeck/pushed/` → `.flowdeck/.emaildeck/pushed_drafts/`
+
 - [ ] This ritual is idempotent — do not stop early if `.flowdeck/.emaildeck/` already exists. For each path below, create it only if missing; skip silently if it already exists:
   - `.flowdeck/.emaildeck/`
   - `.flowdeck/.emaildeck/filters/`
   - `.flowdeck/.emaildeck/mail-inbox/`
   - `.flowdeck/.emaildeck/mail-archive/`
-  - `.flowdeck/.emaildeck/drafts/`
+  - `.flowdeck/.emaildeck/local_drafts/` (drafts composed locally, not yet in Gmail)
+  - `.flowdeck/.emaildeck/pushed_drafts/` (draft cards moved here by `push-to-gmail` after their Gmail draft is created)
+  - `.flowdeck/.emaildeck/sent/` (cards moved here by `check-sent` once Gmail confirms the message was sent)
   - `.flowdeck/.emaildeck/_digests/` (dated digest docs written by the `emaildeck-digest` blueprint; `_digests/deep/` is created on demand)
 
 - [ ] Install the runner script into `.flowdeck/.emaildeck/_scripts/`. Create the directory, then copy `emaildeck_run.js` into it from the deck's `_scripts/` prefix at `.flowdeck/_scripts/emaildeck/` (populated by `flowdeck install` per the manifest `scripts` array — the same runtime-prefix convention as `_energy-cards/`). **Interim until flowdeck-cli honors `manifest.scripts`:** if `_scripts/` is absent but a legacy flat copy already exists at `.flowdeck/.emaildeck/emaildeck_run.js`, leave it in place and treat it as already installed — this copy was never nested under a subfolder in the field, so there is nothing to migrate, unlike creamdeck's scripts. Record which path is live (`.flowdeck/.emaildeck/_scripts/emaildeck_run.js` canonical, or the legacy flat path) — later steps that scaffold a filter's runner invocation line must use whichever path is actually live in this project. If neither source is present, note under `## HUMAN` that the script must be copied manually and filters will not run until it is. (The runner resolves `filters/` and `mail-inbox/` with a `_`-prefixed fallback, so it works whether or not this instance has migrated yet.)
 
 - [ ] Add `.*` to `.flowdeck/.flowdeckignore` if not already present, so `.emaildeck/` is excluded from `flowdeck turn`. This is the sub-deck boundary; per ADR-0006, turn-exclusion of individual instrument cards is frontmatter's job (`recurrence:` / `lifecycle:`), not the folder name.
 
-- [ ] Scaffold the four **instrument cards** — one per operational folder, each played in place (never melded). Per the folder-is-card rule (sleeve `SPEC.md`) these are *not* `_sleeve/` residents and *not* blueprints: they live on the `.emaildeck/` folder they act on, carry `lifecycle: recurring` + `recurrence:` frontmatter (so playing one resets its `## BOT` checkboxes for the next run, and the recurrence records the intended rhythm — a reminder, not a limiter), and are excluded from `turn` sweeps via the `.*` ignore rule above. Play one with `flowdeck play mail-inbox` (bare leaf) or in place. Write each file **only if it does not already exist** (never clobber local tuning):
+- [ ] Scaffold the six **instrument cards** — one per operational folder, each played in place (never melded). Per the folder-is-card rule (sleeve `SPEC.md`) these are *not* `_sleeve/` residents and *not* blueprints: they live on the `.emaildeck/` folder they act on, carry `lifecycle: recurring` + `recurrence:` frontmatter (so playing one resets its `## BOT` checkboxes for the next run, and the recurrence records the intended rhythm — a reminder, not a limiter), and are excluded from `turn` sweeps via the `.*` ignore rule above. Play one with `flowdeck play mail-inbox` (bare leaf) or in place. Write each file **only if it does not already exist** (never clobber local tuning):
 
   - `.flowdeck/.emaildeck/filters/TODO.md`:
     ```markdown
@@ -86,27 +92,27 @@ recurrence: on-demand
     - [ ] summarize-inbox — mint a dated thematic-summary card in `_digests/` from the email cards read this sweep (themes, project relevance, links to source cards; see ACTIONS.md)
     ```
 
-  - `.flowdeck/.emaildeck/drafts/TODO.md`:
+  - `.flowdeck/.emaildeck/local_drafts/TODO.md`:
     ```markdown
     ---
     lifecycle: recurring
     recurrence: on-demand
     ---
 
-    # Drafts
+    # Local Drafts
+
+    Outbound staging composed locally. Each draft card holds a `MESSAGE.md` (To/Cc/Bcc/Subject table + `## Body`). Pushing a draft creates a Gmail draft and **moves the card to `pushed_drafts/`** — a pushed card never stays here.
 
     ## BOT
 
-    - [ ] List all draft cards in `drafts/` (subdirectories with a `TODO.md`).
-    - [ ] process-drafts — for each draft card under `drafts/` with activated (unchecked) items in its `## BOT`, execute those items inline per `ACTIONS.md`, checking each off with a `>` note on that card. Cards with an empty `## BOT` are dormant menus — skip them untouched. Runs before the push steps below so content edits (e.g. `improve-language`) land before the draft reaches Gmail. Execute in place — never by spawning flowdeck subcommands. On a per-card failure, note it under that card's `## HUMAN` and continue with the remaining cards.
-    - [ ] **Authenticate** — read `~/.config/flowdeck/tokens/google.json`; refresh if expired (same pattern as filter cards). On 401: stop and note to run `flowdeck auth google --force`.
-    - [ ] For each reply draft (has `EMAIL.md` + a completed `draft-reply` task): read the drafted reply, encode as RFC 2822 base64url, POST to `https://www.googleapis.com/gmail/v1/users/me/drafts`.
-    - [ ] For each compose draft (has `MESSAGE.md` with an empty `Gmail draft ID` row): read the To/Cc/Bcc/Subject table and `## Body`, encode as RFC 2822 base64url, POST to `https://www.googleapis.com/gmail/v1/users/me/drafts`, and write the returned draft ID back into the `Gmail draft ID` row of `MESSAGE.md`. Skip compose drafts that already have a draft ID.
-    - [ ] Note each pushed draft under `## HUMAN` with its Gmail draft ID.
+    - [ ] **Authenticate** — read `~/.config/flowdeck/tokens/google.json`; refresh if expired. On 401: stop and note to run `flowdeck auth google --force`.
+    - [ ] **Push** — for each draft card in `local_drafts/` whose `MESSAGE.md` "Gmail Draft ID" row is still the empty placeholder: read the To/Cc/Bcc/Subject table + `## Body`, encode as RFC 2822 base64url, POST to `https://www.googleapis.com/gmail/v1/users/me/drafts`, and write the returned draft ID back into the "Gmail Draft ID" row. Skip cards that already carry a real draft ID (starts with `r`).
+    - [ ] **Move to pushed_drafts/** — mandatory, not optional. Every draft card that now carries a real "Gmail Draft ID" must be moved from `local_drafts/<slug>/` to `pushed_drafts/<slug>/` (create `pushed_drafts/` if missing). A pushed card lives in `pushed_drafts/`, never in `local_drafts/`. Only cards still on the placeholder ID stay behind.
+    - [ ] Note each pushed draft under `## HUMAN` with its Gmail Draft ID and its new `pushed_drafts/` location.
 
     ## HUMAN
 
-    Review drafts in Gmail and send when ready.
+    Review drafts in Gmail and send when ready. Pushed cards live in `pushed_drafts/`; play the `pushed_drafts` card to stamp (and file to `sent/`) any that Gmail confirms were sent (`check-sent`).
 
     #### COMMENTS
     ```
@@ -125,6 +131,47 @@ recurrence: on-demand
     ## BOT
 
     - [ ] List archived cards in `mail-archive/` (subdirectories with an `EMAIL.md`). This pile is a destination only — take no further action on them.
+
+    ## HUMAN
+
+    #### COMMENTS
+    ```
+
+  - `.flowdeck/.emaildeck/pushed_drafts/TODO.md`:
+    ```markdown
+    ---
+    lifecycle: recurring
+    recurrence: on-demand
+    ---
+
+    # Pushed Drafts
+
+    Draft cards land here after `push-to-gmail` creates their Gmail draft — staged in Gmail's Drafts folder, awaiting a human send. The local `.md` stays the source of truth. When Gmail confirms a card was sent, `check-sent` stamps it and files it to `sent/`.
+
+    ## BOT
+
+    - [ ] List pushed cards in `pushed_drafts/` (subdirectories with a `MESSAGE.md`).
+    - [ ] check-sent — for each pushed card not already marked sent, consult Gmail; if its draft has been sent (draft ID gone from the drafts list and a matching message is in Sent), stamp `> ✅ **Sent** — <date>` at the top of its `MESSAGE.md` **and move the card from `pushed_drafts/<slug>/` to `sent/<slug>/`**. See ACTIONS.md.
+
+    ## HUMAN
+
+    #### COMMENTS
+    ```
+
+  - `.flowdeck/.emaildeck/sent/TODO.md`:
+    ```markdown
+    ---
+    lifecycle: recurring
+    recurrence: on-demand
+    ---
+
+    # Sent
+
+    Cards confirmed sent by `check-sent` (Gmail shows the message in Sent) are filed here — each `MESSAGE.md` carries a `> ✅ **Sent** — <date>` banner. Destination pile: no further action.
+
+    ## BOT
+
+    - [ ] List sent cards in `sent/` (subdirectories with a `MESSAGE.md`). This pile is a destination only — take no further action on them.
 
     ## HUMAN
 
@@ -172,13 +219,13 @@ recurrence: on-demand
 
   ### Draft a new email
   1. `flowdeck blueprint use emaildeck-compose start`
-  2. Fill in To / Subject / Body when prompted — a draft card is created in `drafts/`.
+  2. Fill in To / Subject / Body when prompted — a draft card is created in `local_drafts/`.
   3. Edit `MESSAGE.md` if needed, then move `push-to-gmail` into `## BOT` to push it to Gmail.
 
   ### Reply to a message
   1. Open a message card in `mail-inbox/`.
   2. Move `draft-reply` into `## BOT`. Add instructions after the `—` to guide the reply (e.g. `draft-reply — decline politely`), or leave it bare to let the bot draft from context.
-  3. The reply is saved to `drafts/` — open it, review or edit `MESSAGE.md`, then move `push-to-gmail` into `## BOT`.
+  3. The reply is saved to `local_drafts/` — open it, review or edit `MESSAGE.md`, then move `push-to-gmail` into `## BOT`.
 
   ## Structure
 
@@ -191,7 +238,9 @@ recurrence: on-demand
       EMAIL.md     — thread metadata
       TODO.md      — ## ACTIONS menu; move items to ## BOT or ## HUMAN to activate
   mail-archive/    — processed message cards (moved here by the archive action)
-  drafts/          — outbound drafts staged for review before push to Gmail
+  local_drafts/    — drafts composed locally, staged before push to Gmail
+  pushed_drafts/   — cards pushed to Gmail as drafts, awaiting send (push-to-gmail files them here)
+  sent/            — cards confirmed sent by check-sent (stamped ✅ Sent, filed from pushed_drafts/)
   ```
 
 - [ ] Scaffold `.flowdeck/.emaildeck/ACTIONS.md` if it does not already exist:
@@ -266,16 +315,16 @@ recurrence: on-demand
 
   ## process-drafts
 
-  Bulk-execute the **activated** draft cards in `drafts/` — the batch counterpart to playing each draft card by hand. A standing step on the `drafts/` instrument card, ordered before the standing push program so content edits land before a draft reaches Gmail.
+  Bulk-execute the **activated** draft cards in `local_drafts/` — the batch counterpart to playing each draft card by hand. A standing step on the `local_drafts/` instrument card, ordered before the standing push program so content edits land before a draft reaches Gmail.
 
   When activated:
-  1. List draft card subdirectories under `drafts/` (compose drafts have a `MESSAGE.md`, reply drafts an `EMAIL.md` + drafted reply; each has a `TODO.md`).
+  1. List draft card subdirectories under `local_drafts/` (compose drafts have a `MESSAGE.md`, reply drafts an `EMAIL.md` + drafted reply; each has a `TODO.md`).
   2. Skip every card whose `## BOT` has no unchecked items — an empty `## BOT` with a populated `## ACTIONS` is a dormant menu awaiting human activation (quarantine rule; never execute `## ACTIONS` items directly).
   3. For each remaining card, execute its unchecked `## BOT` items inline per this file's action definitions (e.g. `improve-language`, `push-to-gmail`), check each off with a one-line `>` note.
   4. On a per-card failure, record it under that card's `## HUMAN` and continue with the remaining cards.
-  5. Report the processed cards and the actions executed per card under `## HUMAN` of the `drafts/` card.
+  5. Report the processed cards and the actions executed per card under `## HUMAN` of the `local_drafts/` card.
 
-  **Trigger:** `- [ ] process-drafts` on the `drafts/` instrument card (standing by default; the instrument's own push steps still run afterwards and skip drafts already pushed).
+  **Trigger:** `- [ ] process-drafts` on the `local_drafts/` instrument card (standing by default; the instrument's own push steps still run afterwards and skip drafts already pushed).
 
   ---
 
@@ -305,9 +354,9 @@ recurrence: on-demand
 
   ## draft-reply
 
-  Compose a reply draft based on this thread and save it to `drafts/<slug>/MESSAGE.md`.
+  Compose a reply draft based on this thread and save it to `local_drafts/<slug>/MESSAGE.md`.
   Instructions after the `—` are optional — omit them to let the bot draft from context, or add them to specify tone, content, or constraints (e.g. `decline politely`, `ask for a call next week`).
-  After the draft is saved, open `drafts/<slug>/TODO.md` and move `push-to-gmail` into `## BOT` to push it to Gmail.
+  After the draft is saved, open `local_drafts/<slug>/TODO.md` and move `push-to-gmail` into `## BOT` to push it to Gmail.
 
   **Trigger:** `- [ ] draft-reply` — bot drafts from thread context
   **Trigger:** `- [ ] draft-reply — [instructions, e.g. "confirm the meeting" or "ask for the invoice"]`
@@ -316,7 +365,7 @@ recurrence: on-demand
 
   ## improve-language
 
-  Rewrite an existing draft in `drafts/` with improved clarity, tone, or style.
+  Rewrite an existing draft in `local_drafts/` with improved clarity, tone, or style.
 
   **Trigger:** `- [ ] improve-language — [target tone, e.g. "more concise" or "formal"]`
 
@@ -465,14 +514,32 @@ recurrence: on-demand
 
   Read this draft card's `MESSAGE.md` (To / Cc / Bcc / Subject metadata table + `## Body`). Authenticate via `~/.config/flowdeck/tokens/google.json` (refresh if expired). Encode the message as RFC 2822 base64url and POST to `https://www.googleapis.com/gmail/v1/users/me/drafts`. Write the returned draft ID into the `Gmail draft ID` row of `MESSAGE.md`. The local `.md` remains the source of truth — this only pushes a copy to Gmail.
 
+  **After the draft ID is written**, move this draft card's folder from `local_drafts/<slug>/` to `pushed_drafts/<slug>/` (create `pushed_drafts/` if missing). Move only once the POST has succeeded and the ID is recorded — if the push fails, leave the card in `local_drafts/` for retry. Once in `pushed_drafts/`, the `check-sent` action stamps the card when Gmail confirms it was actually sent.
+
   **Trigger:** `- [ ] push-to-gmail`
+
+  ---
+
+  ## check-sent
+
+  Consult Gmail to see whether a pushed draft has actually been sent, and if so stamp it at the top of its `MESSAGE.md`. Runs on cards in `pushed_drafts/` (moved there by `push-to-gmail`).
+
+  When activated (per card):
+  1. Read the `Gmail draft ID` row from the card's `MESSAGE.md`. If it is empty, skip — the card was never pushed.
+  2. If `MESSAGE.md` already carries a `> ✅ **Sent**` banner, skip — already confirmed.
+  3. Authenticate via `~/.config/flowdeck/tokens/google.json` (refresh if expired).
+  4. List drafts: `GET https://www.googleapis.com/gmail/v1/users/me/drafts`. If the draft ID is still present, the draft is unsent — skip.
+  5. If the draft ID is **absent** from the list, confirm it was sent (not discarded): `GET https://www.googleapis.com/gmail/v1/users/me/messages?q=in:sent to:<recipient> subject:<subject>` scoped to on/after the push date. A match confirms the send.
+  6. On a confirmed send: (a) insert `> ✅ **Sent** — <YYYY-MM-DD>` as the first line under the `# ` title of `MESSAGE.md`, then (b) move the card's folder from `pushed_drafts/<slug>/` to `sent/<slug>/` (create `sent/` if missing) — a confirmed-sent card lives in `sent/`, never in `pushed_drafts/`. If the draft ID is gone but nothing matches in Sent (likely discarded), note it under `## HUMAN` and leave the card in `pushed_drafts/`.
+
+  **Trigger:** `- [ ] check-sent` — standing on the `pushed_drafts/` instrument card (sweeps every pushed card); also runnable on a single pushed card.
 
   ---
 
   <!-- Add your own actions below -->
   ```
 
-- [ ] Scaffold `.flowdeck/.emaildeck/drafts/mock-email-card/EMAIL.md` if it does not already exist:
+- [ ] Scaffold `.flowdeck/.emaildeck/local_drafts/mock-email-card/EMAIL.md` if it does not already exist:
   ```markdown
   # Email: [Subject here]
 
@@ -493,7 +560,7 @@ recurrence: on-demand
   https://mail.google.com/mail/u/0/#inbox/THREAD_ID
   ```
 
-- [ ] Scaffold `.flowdeck/.emaildeck/drafts/mock-email-card/TODO.md` if it does not already exist:
+- [ ] Scaffold `.flowdeck/.emaildeck/local_drafts/mock-email-card/TODO.md` if it does not already exist:
   ```markdown
   # [Subject here]
 
@@ -520,7 +587,7 @@ recurrence: on-demand
   #### COMMENTS
   ```
 
-- [ ] Scaffold `.flowdeck/.emaildeck/drafts/mock-compose-card/MESSAGE.md` if it does not already exist:
+- [ ] Scaffold `.flowdeck/.emaildeck/local_drafts/mock-compose-card/MESSAGE.md` if it does not already exist:
   ```markdown
   # [Subject here]
 
@@ -537,7 +604,7 @@ recurrence: on-demand
   <!-- Write your message here -->
   ```
 
-- [ ] Scaffold `.flowdeck/.emaildeck/drafts/mock-compose-card/TODO.md` if it does not already exist:
+- [ ] Scaffold `.flowdeck/.emaildeck/local_drafts/mock-compose-card/TODO.md` if it does not already exist:
   ```markdown
   # [Subject here]
 

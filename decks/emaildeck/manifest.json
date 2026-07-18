@@ -38,7 +38,7 @@
     },
     {
       "from": "_drafts",
-      "to": "drafts"
+      "to": "local_drafts"
     },
     {
       "from": "digests",
@@ -47,7 +47,15 @@
     {
       "from": "scripts",
       "to": "_scripts"
+    },
+    {
+      "from": "drafts",
+      "to": "local_drafts"
+    },
+    {
+      "from": "pushed",
+      "to": "pushed_drafts"
     }
   ],
-  "description": "Gmail filter rules as flowdeck cards \u2014 fetch, label, and route findings to crunchdeck"
+  "description": "Gmail filter rules as flowdeck cards — fetch, label, and route findings to crunchdeck"
 }

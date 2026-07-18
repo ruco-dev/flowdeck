@@ -1,0 +1,25 @@
+# {{PROPOSAL_TITLE}}
+
+| Field | Value |
+|-------|-------|
+| ID | {{PROPOSAL_ID}} |
+| Contact | {{CONTACT}} |
+| Status | {{STATUS}} |
+| Date | {{DATE}} |
+| Valid Until | {{VALID_UNTIL}} |
+| Currency | {{CURRENCY}} |
+| Approved | — |
+
+## Items
+
+| # | Description | Qty | Unit Price | Total | Hash |
+|---|--------------|-----|------------|-------|------|
+| 1 | {{ITEM_DESCRIPTION}} | {{ITEM_QTY}} | {{ITEM_UNIT_PRICE}} | {{ITEM_TOTAL}} | — |
+
+## Notes
+
+{{NOTES}}
+
+## Updates
+
+<!-- most recent first — format: **YYYY-MM-DD** · summary -->

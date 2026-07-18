@@ -85,7 +85,15 @@ function parseFilterMd(src) {
     const rows = runLogBlock.split('\n').filter(l => /^\|\s*\d{4}-\d{2}-\d{2}/.test(l))
     if (rows.length > 0) {
       const lastDate = rows[rows.length - 1].split('|')[1].trim()
-      afterDate = lastDate.replace(/-/g, '/')
+      // Re-scan a trailing window instead of pinning to the exact last-run
+      // date: once more than one run happens on the same day, the naive
+      // "last row" date locks to today, so a reply that arrives that day
+      // falls out of the search window on every later run and is never
+      // found again. A few days of overlap is cheap — dedup by thread ID
+      // still prevents duplicate cards.
+      const d = new Date(lastDate)
+      d.setDate(d.getDate() - 3)
+      afterDate = `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`
     }
   }
 
@@ -413,7 +421,7 @@ const ACTIONS_MENU = [
   ...(hasCrunchdeck ? ['- [ ] send-to-crunchdeck'] : []),
 ].join('\n')
 
-function scaffoldEmail({ subject, from, date, threadId, labelName, snippet, body, threadUrl }) {
+function scaffoldEmail({ subject, from, date, threadId, messageId, labelName, snippet, body, threadUrl }) {
   return `# Email: ${subject}
 
 | Field | Value |
@@ -421,6 +429,7 @@ function scaffoldEmail({ subject, from, date, threadId, labelName, snippet, body
 | From | ${from} |
 | Date | ${date} |
 | Thread ID | ${threadId} |
+| Message ID | ${messageId} |
 | Label applied | ${labelName} |
 | Filter | ${filterSlug} |
 
@@ -462,20 +471,44 @@ ${ACTIONS_MENU}
 }
 
 // ---------------------------------------------------------------------------
-// Existing thread IDs (dedup)
+// Existing message IDs (dedup) + legacy thread floors
 // ---------------------------------------------------------------------------
 
-function existingThreadIds() {
+// Cards are one-per-MESSAGE, not one-per-thread: a reply can land on a thread
+// that's a year old and be its own unrelated topic (someone hit "reply" just
+// to avoid retyping recipients), so grouping by thread ID would bury it
+// inside an unrelated, possibly already-closed card. Thread ID is kept on
+// each card only as a correlation field.
+//
+// Cards created before this change recorded one card per THREAD with a
+// "Message Count" field — that count is a floor so messages already folded
+// into one of those older cards don't get a duplicate card of their own.
+function existingMessageIds() {
   const ids = new Set()
   if (!existsSync(inboxDir)) return ids
   for (const entry of readdirSync(inboxDir, { withFileTypes: true })) {
     if (!entry.isDirectory()) continue
-    const emailMd = join(inboxDir, entry.name, 'EMAIL.md')
-    if (!existsSync(emailMd)) continue
-    const m = readFileSync(emailMd, 'utf8').match(/\|\s*Thread ID\s*\|\s*(\S+)\s*\|/)
+    const emailMdPath = join(inboxDir, entry.name, 'EMAIL.md')
+    if (!existsSync(emailMdPath)) continue
+    const m = readFileSync(emailMdPath, 'utf8').match(/\|\s*Message ID\s*\|\s*(\S+)\s*\|/)
     if (m) ids.add(m[1])
   }
   return ids
+}
+
+function legacyThreadFloors() {
+  const floors = new Map()
+  if (!existsSync(inboxDir)) return floors
+  for (const entry of readdirSync(inboxDir, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue
+    const emailMdPath = join(inboxDir, entry.name, 'EMAIL.md')
+    if (!existsSync(emailMdPath)) continue
+    const src = readFileSync(emailMdPath, 'utf8')
+    const idMatch = src.match(/\|\s*Thread ID\s*\|\s*(\S+)\s*\|/)
+    const countMatch = src.match(/\|\s*Message Count\s*\|\s*(\d+)\s*\|/)
+    if (idMatch && countMatch) floors.set(idMatch[1], parseInt(countMatch[1], 10))
+  }
+  return floors
 }
 
 // ---------------------------------------------------------------------------
@@ -515,65 +548,83 @@ const effectiveQuery = filter.toDomain
 const allThreads = await adapter.listThreads(effectiveQuery, filter.afterDate, accessToken)
 console.log(`Threads found: ${allThreads.length}`)
 
-const seen = existingThreadIds()
-const newThreads = allThreads.filter(t => !seen.has(t.id))
-console.log(`New (no existing card): ${newThreads.length}`)
+const seenMessageIds = existingMessageIds()
+const floors = legacyThreadFloors()
 
 mkdirSync(inboxDir, { recursive: true })
 
 let labeled = 0
 let created = 0
 
-for (const thread of newThreads) {
+for (const thread of allThreads) {
   const threadId = thread.id
-  let subject, from, date, snippet, body
 
+  // One candidate per actual message — Outlook already hands us one message
+  // per "thread" here; Gmail threads get expanded into their messages.
+  let candidates
   if (filter.provider === 'microsoft') {
-    subject = thread.subject || '(no subject)'
-    from = thread.from?.emailAddress?.address || ''
-    date = thread.receivedDateTime ? new Date(thread.receivedDateTime).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)
-    snippet = thread.bodyPreview || ''
-    body = thread.body?.content || ''
+    candidates = [{
+      messageId: thread.id,
+      subject: thread.subject || '(no subject)',
+      from: thread.from?.emailAddress?.address || '',
+      date: thread.receivedDateTime ? new Date(thread.receivedDateTime).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+      snippet: thread.bodyPreview || '',
+      body: thread.body?.content || '',
+    }]
   } else {
     const fullThread = await adapter.getThread(threadId, accessToken)
-    const msg = fullThread.messages[0]
-    const headers = msg.payload.headers
-
-    subject = adapter.getHeader(headers, 'Subject') || '(no subject)'
-    from = adapter.getHeader(headers, 'From')
-    const rawDate = adapter.getHeader(headers, 'Date')
-    date = rawDate ? new Date(rawDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)
-    snippet = fullThread.snippet ?? ''
-    body = adapter.decodeBody(msg.payload)
+    candidates = fullThread.messages.map(msg => {
+      const headers = msg.payload.headers
+      const rawDate = adapter.getHeader(headers, 'Date')
+      return {
+        messageId: msg.id,
+        subject: adapter.getHeader(headers, 'Subject') || '(no subject)',
+        from: adapter.getHeader(headers, 'From'),
+        date: rawDate ? new Date(rawDate).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+        snippet: fullThread.snippet ?? '',
+        body: adapter.decodeBody(msg.payload),
+      }
+    })
   }
 
-  // Apply label/category
+  const floor = floors.get(threadId) ?? 0
+  const newMessages = candidates.filter((c, i) =>
+    !seenMessageIds.has(c.messageId) && (filter.provider === 'microsoft' || i >= floor)
+  )
+  if (newMessages.length === 0) continue
+
+  // Apply label/category once per thread that had new activity.
   await adapter.applyLabel(threadId, labelId, accessToken)
   labeled++
 
-  // Scaffold card
-  const slug = uniqueSlug(date, subject)
-  const cardDir = join(inboxDir, slug)
-  mkdirSync(cardDir, { recursive: true })
+  for (const msg of newMessages) {
+    const slug = uniqueSlug(msg.date, msg.subject)
+    const cardDir = join(inboxDir, slug)
+    mkdirSync(cardDir, { recursive: true })
 
-  writeFileSync(join(cardDir, 'EMAIL.md'), scaffoldEmail({
-    subject, from, date, threadId,
-    labelName: filter.label,
-    snippet,
-    body,
-    threadUrl: adapter.createThreadUrl(threadId),
-  }))
+    writeFileSync(join(cardDir, 'EMAIL.md'), scaffoldEmail({
+      subject: msg.subject,
+      from: msg.from,
+      date: msg.date,
+      threadId,
+      messageId: msg.messageId,
+      labelName: filter.label,
+      snippet: msg.snippet,
+      body: msg.body,
+      threadUrl: adapter.createThreadUrl(threadId),
+    }))
 
-  writeFileSync(join(cardDir, 'TODO.md'), scaffoldTodo({
-    subject,
-    botTasks:   filter.botTasks,
-    humanTasks: filter.humanTasks,
-  }))
+    writeFileSync(join(cardDir, 'TODO.md'), scaffoldTodo({
+      subject: msg.subject,
+      botTasks:   filter.botTasks,
+      humanTasks: filter.humanTasks,
+    }))
 
-  console.log(`  ✓ ${slug}`)
-  created++
+    console.log(`  ✓ ${slug}`)
+    created++
+  }
 }
 
 appendRunLog(allThreads.length, labeled, created)
 
-console.log(`\nDone — ${created} card(s) created, ${allThreads.length - newThreads.length} skipped (already exist).`)
+console.log(`\nDone — ${created} card(s) created.`)

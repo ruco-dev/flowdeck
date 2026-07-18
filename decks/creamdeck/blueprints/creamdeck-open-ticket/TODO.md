@@ -26,7 +26,7 @@ lifecycle: one-shot
 
   <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
 
-  - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Ticket ID` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
+  - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
   - [ ] close-ticket — prompt for ticket slug; set Stage to Closed and fill Closed date in `TICKET.md`
 
   #### COMMENTS
@@ -34,7 +34,7 @@ lifecycle: one-shot
 
 - [ ] Read `## HUMAN` below for title, priority, linked contact, and description. Stop and surface any missing required values (title) under `## HUMAN`.
 
-- [ ] Generate a ticket ID: read `Prefix` from the `## Ticket ID` table in `CREAMDECK.md`. Count existing subdirectories in `tickets/` (excluding non-ticket files) + 1, zero-padded to 3 digits. Combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). This ID is passed to the client and must be unique.
+- [ ] Generate a ticket ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`. Count existing subdirectories in `tickets/` (excluding non-ticket files) + 1, zero-padded to 3 digits. Combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). This ID is passed to the client and must be unique.
 
 - [ ] Generate slug from title: kebab-case, max 40 characters.
 
@@ -63,6 +63,7 @@ lifecycle: one-shot
   - [ ] link-inbox-item — note an inbox item linked to this ticket in both files
   - [ ] draft-reply — create a Gmail draft via emaildeck to the linked contact
   - [ ] add-meeting — schedule a meeting for this ticket in calendardeck (see creamdeck AGENT.md)
+  - [ ] link-proposal-item — prompt for a proposal ID and item number; verify the item's Hash in that `PROPOSAL.md` is minted (run `mark-approved` on the proposal first if not); write `<proposal-id>#<item-number> · <hash>` into this ticket's `Billing Ref` field
   - [ ] close — mark ticket Resolved or Closed; populate Resolution in `TICKET.md`
 
   #### COMMENTS

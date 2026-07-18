@@ -1,0 +1,21 @@
+# {{REQUEST_NOTE_TITLE}}
+
+| Field | Value |
+|-------|-------|
+| ID | {{REQUEST_NOTE_ID}} |
+| Proposal | {{PROPOSAL_ID}} |
+| Contact | {{CONTACT}} |
+| Status | {{STATUS}} |
+| Date | {{DATE}} |
+| Source PDF | {{SOURCE_PDF}} |
+
+## Items
+
+<!-- copied from the referenced proposal's approved rows — column order matches PROPOSAL.md, hash preserved -->
+
+| # | Description | Qty | Unit Price | Total | Hash |
+|---|--------------|-----|------------|-------|------|
+
+## Notes
+
+{{NOTES}}

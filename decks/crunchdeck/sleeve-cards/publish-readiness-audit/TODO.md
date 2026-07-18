@@ -45,6 +45,7 @@ nick: Shark
 
 - [ ] Verify the README against the CODE, not against memory: every documented command / flag / env var exists in the actual entry point(s); every tool or command the code exposes is documented. Read the entry files and compare — docs describing a previous iteration of the product is how trust dies.
 - [ ] CHANGELOG top entry vs `package.json` version — an unreleased vNext entry sitting above the shipped version confuses consumers; align them or mark the entry Unreleased.
+- [ ] Meld↔notes reconciliation: commits since the last tag ↔ meld cards covering them (`commits:` envelope field where present) ↔ `CHANGELOG` `## [Unreleased]` entries. An uncovered commit is undocumented work (mint + meld a pre-checked card); a meld with no Unreleased line is a skipped fold — **BLOCKER**, same class as an unmelded inbox resident (repo-root `CARD-SENDING.md § Meld mechanics`).
 - [ ] LICENSE file exists at repo root and matches `package.json` `license`; if the repo carries dual licensing (code vs content), both are stated.
 
 ### 5 · Deck state

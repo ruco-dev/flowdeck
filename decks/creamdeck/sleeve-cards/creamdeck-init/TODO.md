@@ -27,8 +27,11 @@ recurrence: on-demand
   - `.flowdeck/.creamdeck/creamdeck-inbox/`
   - `.flowdeck/.creamdeck/_contacts/`
   - `.flowdeck/.creamdeck/tickets/`
+  - `.flowdeck/.creamdeck/proposals/`
+  - `.flowdeck/.creamdeck/request-notes/`
+  - `.flowdeck/.creamdeck/invoices/`
 
-- [ ] Install the report scripts into `.flowdeck/.creamdeck/_scripts/`. Create the directory, then copy `report.js` and `html.js` into it from `.flowdeck/_scripts/creamdeck/` (populated by `flowdeck install creamdeck` per the manifest `scripts` array). If the scripts are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` actions will not run until they are.
+- [ ] Install the report and billing scripts into `.flowdeck/.creamdeck/_scripts/`. Create the directory, then copy `report.js`, `html.js`, `approve-proposal.js`, and `export-invoice.js` into it from `.flowdeck/_scripts/creamdeck/` (populated by `flowdeck install creamdeck` per the manifest `scripts` array). If the scripts are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` actions will not run until they are.
 
 - [ ] Add `.*` to `.flowdeck/.flowdeckignore` if not already present, so `.creamdeck/` is excluded from `flowdeck turn`.
 
@@ -44,14 +47,19 @@ recurrence: on-demand
   - `creamdeck-inbox/` — incoming items routed from emaildeck or logged manually
   - `_contacts/` — one subfolder per tracked contact
   - `tickets/` — open support or project tickets
+  - `proposals/` — priced proposals; approval mints a per-item hash tickets can reference
+  - `request-notes/` — order/work confirmations generated from an approved proposal
+  - `invoices/` — invoices generated from a confirmed request note, with a `invoice-export.json` ready for a future financial-app connector
 
   ## Usage
 
   - Play `creamdeck-inbox/TODO.md` to surface and route unread items.
   - Play a contact card to review interactions and draft follow-ups.
   - Play `tickets/TODO.md` to see open tickets by stage.
+  - Play `proposals/TODO.md` to see proposals by status.
   - Add a contact directly: `flowdeck blueprint use creamdeck-add-contact`.
   - Open a ticket: `flowdeck blueprint use creamdeck-open-ticket`.
+  - Draft a proposal: `flowdeck blueprint use creamdeck-new-proposal`.
   ```
 
 - [ ] Create `.flowdeck/.creamdeck/creamdeck-inbox/TODO.md` if it does not already exist:
@@ -225,11 +233,75 @@ recurrence: on-demand
 
   <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
 
-  - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Ticket ID` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
+  - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
   - [ ] close-ticket — prompt for ticket slug; set Stage to Closed and fill Closed date in `TICKET.md`
   - [ ] generate-report — rebuild `tickets/REPORT.md` from live ticket data without bot intervention; run `node .flowdeck/.creamdeck/_scripts/report.js` from the project root
   - [ ] export-report — generate a static HTML report from live ticket data; run `node .flowdeck/.creamdeck/_scripts/html.js` from the project root; output: `.flowdeck/.creamdeck/_report/` (existing user assets in `_report/` are preserved)
   - [ ] export-report --lang <code> — translated HTML copy; the agent reads each `TICKET.md`, translates title/description/updates/resolution into the target language, writes the result to `.flowdeck/.creamdeck/_report/<code>/.translations.json` (per ticket ID → `{ title, description, updates, resolution }`), then runs `node .flowdeck/.creamdeck/_scripts/html.js --lang <code>` to render the localized tree under `_report/<code>/`
+
+  #### COMMENTS
+  ```
+
+- [ ] Create `.flowdeck/.creamdeck/proposals/TODO.md` if it does not already exist:
+  ```markdown
+  # proposals
+
+  ## BOT
+
+  - [ ] List all subdirectories in this folder. For each, read `PROPOSAL.md` — extract title, ID, status, contact, and total value (sum of the Items table's Total column).
+  - [ ] Surface proposals under `## HUMAN`, grouped by status (Draft, Sent, Approved, Rejected, Expired).
+
+  ## HUMAN
+
+  ## ACTIONS
+
+  <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+
+  - [ ] new-proposal — scaffold a new proposal card from `_energy-cards/PROPOSAL.md.template`; ask for title, linked contact slug, currency, valid-until date, and a line-item list (`description | qty | unit price` per line). Auto-generate the proposal ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing proposal subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}P{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZP29062026001`). Compute each item's Total as qty × unit price; leave every Hash cell `—`.
+  - [ ] mark-approved — prompt for a proposal ID or folder name; run `node .flowdeck/.creamdeck/_scripts/approve-proposal.js <id-or-folder>` from the project root to mint item hashes and set Status to Approved
+
+  #### COMMENTS
+  ```
+
+- [ ] Create `.flowdeck/.creamdeck/request-notes/TODO.md` if it does not already exist:
+  ```markdown
+  # request-notes
+
+  ## BOT
+
+  - [ ] List all subdirectories in this folder. For each, read `REQUEST-NOTE.md` — extract title, ID, status, proposal reference, and whether a Source PDF is attached.
+  - [ ] Surface request notes under `## HUMAN`, grouped by status (Draft, Sent, Confirmed), flagging any still missing a Source PDF.
+
+  ## HUMAN
+
+  ## ACTIONS
+
+  <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+
+  - [ ] attach-pdf — prompt for a request note ID or folder and a PDF path; copy the file into `request-notes/<id>/attachments/` and record its relative path in the `Source PDF` field
+  - [ ] mark-confirmed — prompt for a request note ID or folder; set Status to Confirmed in `REQUEST-NOTE.md`
+
+  #### COMMENTS
+  ```
+
+- [ ] Create `.flowdeck/.creamdeck/invoices/TODO.md` if it does not already exist:
+  ```markdown
+  # invoices
+
+  ## BOT
+
+  - [ ] List all subdirectories in this folder. For each, read `INVOICE.md` — extract title, ID, status, contact, due date, and total value (sum of the Items table's Total column).
+  - [ ] Surface invoices under `## HUMAN`, grouped by status (Draft, Issued, Paid, Overdue, Cancelled), flagging any Issued invoice past its Due Date.
+
+  ## HUMAN
+
+  ## ACTIONS
+
+  <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+
+  - [ ] mark-issued — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/export-invoice.js <id-or-folder>` from the project root to write `invoice-export.json`, then set Status to Issued in `INVOICE.md`
+  - [ ] mark-paid — prompt for an invoice ID or folder; set Status to Paid and fill the Paid date in `INVOICE.md`
+  - [ ] void — prompt for an invoice ID or folder; set Status to Cancelled in `INVOICE.md`
 
   #### COMMENTS
   ```

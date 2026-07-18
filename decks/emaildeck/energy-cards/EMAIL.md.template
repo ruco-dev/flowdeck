@@ -5,6 +5,7 @@
 | From | {{FROM}} |
 | Date | {{DATE}} |
 | Thread ID | {{THREAD_ID}} |
+| Message ID | {{MESSAGE_ID}} |
 | Label applied | {{LABEL}} |
 | Filter | {{FILTER_NAME}} |
 | Ticket | — |

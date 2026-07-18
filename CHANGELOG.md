@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **meld-mechanics** — `CARD-SENDING.md` gains a canonical § Meld mechanics: the doc fold (CHANGELOG `## [Unreleased]` slice always; README only on user-facing change) happens in the meld commit itself, not at release; local-origin melds commit directly on the default branch while foreign-origin (v2) melds fold via PR — meld is the review moment for someone else's claimed work; releases promote + verify via a three-way reconciliation (commits since last tag ↔ meld cards ↔ Unreleased entries), never re-derive notes from the pile. The reconciliation is wired into crunchdeck's `publish-readiness-audit` § Docs drift (crunchdeck v0.10.0 → **v0.11.0**) and the CLI's default `release` sleeve card.
+
 ## [v0.1.0] — 2026-07-11
 
 ### Added

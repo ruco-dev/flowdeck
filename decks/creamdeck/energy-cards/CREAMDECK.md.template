@@ -19,15 +19,22 @@
 - **Community** — contributors and power users
 - **Colleagues** — internal team members and coworkers
 
-## Ticket ID
+## Document IDs
 
-Format: `{PREFIX}{DDMMYYYY}{SEQ}` — e.g. `{{TICKET_PREFIX}}29062026001`
+All document IDs share one project prefix and a daily, zero-padded sequence — each document type counts its own subfolder independently, so a ticket and a proposal opened the same day can both be `#001`.
 
 | Field | Value |
 |-------|-------|
 | Prefix | `{{TICKET_PREFIX}}` |
 | Date format | DDMMYYYY |
-| Sequence | 3-digit zero-padded, resets daily |
+| Sequence | 3-digit zero-padded, resets daily, per document type |
+
+| Document | Format | Example |
+|----------|--------|---------|
+| Ticket | `{PREFIX}{DDMMYYYY}{SEQ}` | `{{TICKET_PREFIX}}29062026001` |
+| Proposal | `{PREFIX}P{DDMMYYYY}{SEQ}` | `{{TICKET_PREFIX}}P29062026001` |
+| Request Note | `{PREFIX}R{DDMMYYYY}{SEQ}` | `{{TICKET_PREFIX}}R29062026001` |
+| Invoice | `{PREFIX}I{DDMMYYYY}{SEQ}` | `{{TICKET_PREFIX}}I29062026001` |
 
 Change `Prefix` to match your client-facing code (e.g. `XYZ`, `ACM`, `MDB`).
 
