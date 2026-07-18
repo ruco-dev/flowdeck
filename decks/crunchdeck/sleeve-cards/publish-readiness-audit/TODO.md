@@ -87,6 +87,7 @@ nick: Shark
   ## HUMAN
 
   - [ ] <decision — e.g. sanitize vs accept a private-content hit, canonical twin + `npm deprecate`, license choice> (AUDIT.md § <section>)
+    > _answer:_
 
   #### COMMENTS
   ```
