@@ -1,0 +1,73 @@
+# seodeck
+
+The `.flowdeck/.seodeck/` directory holds SEO and content-strategy operations as cards. seodeck installs into a website repo (static HTML, WordPress theme source, docs site) and turns page audits and content planning into replayable folder cards. It is the workflow successor to sitegrow-as-product: the knowledge moved here; the code stays archived in the sitegrow repo and is extracted only when a card needs it (see **Sitegrow heritage** below).
+
+Every seodeck blueprint consumes mdblu marketing skills via `skills:` frontmatter — seodeck is the skills library's first real consumer. A play must read each listed skill before executing and **stamp the applied skill slugs into the artifact it writes** (the `Skills applied` row), so with-skills vs. without-skills output stays attributable.
+
+**Audit cards (created by `seodeck-audit-page`):**
+- `.flowdeck/.seodeck/audits/<YYYY-MM-DD>-<page-slug>/` — `AUDIT.md` + `TODO.md`
+  - `AUDIT.md` — section map, rollup table, findings grouped by skill dimension (Conversion / Clarity & CTA / Engagement & Trust / AEO & AI Visibility), each S/M/L scored, `Skills applied` stamp
+  - `TODO.md` — `## ACTIONS` menu: `apply-fixes`, `send-to-crunchdeck`, `discard`
+
+**Plan cards (created by `seodeck-plan-content`):**
+- `.flowdeck/.seodeck/plan/<YYYY-MM-DD>-<scope-slug>/` — `PLAN.md` + `TODO.md`
+  - `PLAN.md` — site inventory, keyword map, topic clusters (hub/spoke), architecture notes, Now/Next/Later priorities, `Skills applied` stamp
+  - `TODO.md` — `## ACTIONS` menu: `promote-to-cards`, `send-to-crunchdeck`, `discard`
+
+**Instrument cards (folder cards — scaffolded by `seodeck-init`, played in place, never melded):**
+
+Each operational folder carries its own `TODO.md` with `lifecycle: recurring` frontmatter, per the folder-is-card rule (sleeve `SPEC.md`). They are **not** `_sleeve/` residents and **not** blueprints; the `.*` `.flowdeckignore` rule keeps them out of `flowdeck turn` sweeps.
+
+- `.flowdeck/.seodeck/audits/TODO.md` — list audit cards, their pages, dates, `Skills applied` stamps, and open recommendations
+- `.flowdeck/.seodeck/plan/TODO.md` — list plan cards and their unpromoted priority items
+- `.flowdeck/.seodeck/error404/TODO.md` — feed a CSV of URLs (a GSC 404 export) → broken/redirect report → suggest destinations (GSC query→page + Wayback + web search + homepage fallback) → export to RankMath/`.htaccess` → verify after import. The shared link-check engine.
+- `.flowdeck/.seodeck/external-links/TODO.md` — same engine on a GSC "top externally-linked pages" export: broken ones waste backlink equity (high-priority redirects).
+- `.flowdeck/.seodeck/internal-links/TODO.md` — same engine on a GSC "top internally-linked pages" export: broken internal links (prefer fixing the source `href` over redirecting).
+- `.flowdeck/.seodeck/sitemap/TODO.md` — enumerate every URL the live sitemap advertises (`site_checks sitemap --out`) → check each via `seodeck_error404.js` (concurrency 5, timeout 20 s) → classify with sitemap-specific semantics: **redirected is a finding** (the sitemap must advertise `final_url`, not the redirect source), broken → fix/drop + redirect plan, error → retry. Superset of the GSC internally-linked set; the gap is what routine 2 investigates.
+
+The three link-check instruments are *potential-404* variants of one flow — they all run `_scripts/seodeck_error404.js` and reuse `error404`'s suggest→verify→export steps; only the source list differs.
+
+**Blueprints (`lifecycle: recurring`, `recurrence: on-demand` — each play writes a dated folder card under `.seodeck/`, not a meldable card):**
+- `seodeck-audit-page` — `skills: conversion-first-content, clarity-cta-optimization, engagement-trust-signals, aeo-ai-visibility`. Acquire the page (local file read, or static fetch for a URL) → map it against the section taxonomy → apply each skill's checklist as an audit pass → write `audits/<YYYY-MM-DD>-<page-slug>/AUDIT.md` from `_energy-cards/AUDIT-REPORT.md.template`.
+- `seodeck-plan-content` — `skills: keyword-research, topic-expansion-topical-authority, strategic-content-architecture`. Inventory the pages in scope (+ crunchdeck `PROFILE.md` if present) → keyword map → topic clusters → architecture → write `plan/<YYYY-MM-DD>-<scope-slug>/PLAN.md` from `_energy-cards/CONTENT-PLAN.md.template`.
+
+**Skills resolution (play convention):** prefer an installed local copy (`.claude/skills/<slug>/SKILL.md` or `.mdblu/skills/<slug>.md`), else fetch on demand with `mdblu skills get <slug>`. A dangling slug is a warning in the play summary, not a failure — the corresponding audit dimension is skipped and noted. Skill slugs are bare kebab-case names resolved against the mdblu manifest (`templates/index.json` → `skills[]`).
+
+**Section taxonomy:** audits and plans classify page content against sitegrow's payload section vocabulary — `hero`, `value-prop`, `problem`, `solutions`, `how-it-works`, `faq`, `cta`, `testimonials` (plus `head` and `page-wide` when nothing narrower fits). Findings name the section they hit; content plans name the sections a page is missing.
+
+**Model-routing doctrine (ported from sitegrow's model-routing-strategy and NeedleRouter cards):** dispatch is retrieval, not reasoning. Card steps encode their order deterministically — never spend a model call deciding "what comes next" in a fixed pipeline. Spend model reasoning on judgment: finding quality, recommendation wording, keyword intent. 80–90% of an audit is pattern application against a skill checklist and suits cheaper/faster models; escalate to a frontier model only for novel structural calls. This is the deck-level restatement of the DECKS.md principle: deterministic steps scaffold; the model only enriches.
+
+**Data scripts (`scripts/` → installed to `.flowdeck/.seodeck/_scripts/`, emaildeck pattern):** zero-dependency Node runners (node: builtins + global `fetch` only) that give cards real data; the model spends reasoning on findings, never on fetching. Extracted from the seodoctor pill (2026-07-13) — seodeck needs no MCP server; deterministic steps are scripts, per the routing doctrine above.
+
+- `seodeck_gsc.js` — Google Search Console. `connect [--account] [--force]` (one-time browser OAuth; stores token **and** OAuth client in `~/.gsc-mcp-server/<account>/`, mode 600 — existing tokens from earlier GSC tooling are reused as-is); `sites` (all connected properties); `fetch --site <property> [--period 90d] [--country PT] [--inspect 3]` → JSON with queries, pages, countries, devices, daily overview, sitemaps, and URL inspections (indexing verdict, CWV); `querypages --site <property> [--period 90d] [--rowlimit 1000]` → the **query→page map** (`rows: [{query, page, clicks, impressions, position}]`), the ground truth for redirect targeting; `inspect --site <property> [--account <name>] <url1> [url2 ...]` → per-URL **URL Inspection** (read-only, `webmasters.readonly` scope) as a JSON array of `{url, result}` with `indexStatusResult`/`richResultsResult`/`mobileUsabilityResult` — the `inspect-urls` card's engine (URLs are positional; `--site` is kept out of the URL list). Token refresh is automatic; the OAuth client resolves from `SEODECK_GOOGLE_CLIENT_ID`/`SEODECK_GOOGLE_CLIENT_SECRET` (or `SEODOCTOR_*`) env vars, falling back to the stored `credentials.json`.
+- `seodeck_site_checks.js` — live-site checks, regex-level HTML parsing (audit signals, not a DOM). `technical --url <url> [--depth 2]` → headers + CDN, JS-wall, internal crawl (≤3 depth, ≤20/layer) with broken links, redirect chains, noindex, IndexNow key. `schema --urls <u1,u2>` → JSON-LD, headings, FAQ pairs, meta description, canonical, og:, footer social, opening paragraph, word count. `links --url <url> [--scope all|internal|external]` → **one page's links checked, including OUTBOUND external** (the crawl is same-origin and misses those): `{ counts, broken:[{url,kind,status}] }`. `sitemap --url <origin> [--out <csv>]` → follows robots.txt / sitemap index and lists advertised URLs; when `--out` is given writes a `url`-header CSV (one URL per row) — the exact input shape `seodeck_error404.js --in` consumes. Crawl caveat: internal links are same-origin; a `jsWall: true` result is the signal to reach for sitegrow's `module-e` scraper (see extraction map).
+- `seodeck_error404.js` — the **shared link-check engine**. `--in <urls.csv> [--out <results.csv>] [--redirects <plan.md>] [--concurrency 8] [--timeout 15000] [--retries 1]`: reads a CSV of URLs (first column / a `url` column), follows redirects, classifies ok/redirected/broken/error, auto-tests pagination phantoms (`base_status`), and writes a redirect-plan MD of the real 404s (preserving filled `Destino`/`Notas` across re-runs). Backs the `error404`/`external-links`/`internal-links` instruments.
+- `seodeck_wayback.js` — Internet Archive. `lookup --url <url> [--at <YYYYMMDD>]` → closest snapshot's `title`/`titleClean`/`h1`/`description` (via the reliable CDX index; `available:false` when never archived — e.g. `?page_id=` query forms); `cdx --url <url> [--limit N]` → capture list. Recovers keywords for obscure dead URLs.
+- `seodeck_redirect_export.js` — `--in <plan.md> --format rankmath|htaccess|all [--base <rank-math-settings.json>]`: turns a confirmed `*-redirects.md` into `redirects.htaccess` (anchored `RedirectMatch` + `mod_rewrite` for query sources) and `redirects-rankmath.json` (RankMath settings-import shape, PHP-serialized `sources`, **only the new rules**; a settings export is used as a reference for dedupe + id continuation, never merged). New formats slot into its `FORMATS` registry.
+- `seodeck_verify_redirects.js` — `--in <file>` (RankMath JSON / `.htaccess` / `*-redirects.md`): post-import check — fetches each source live and reports `OK` / `MISMATCH` / `STILL-404` / `NOT-REDIRECTED` / `ERROR`.
+- `seodeck_sitemap_diff.js` — `--sitemap <origin | sitemap-urls.csv> --gsc <internal-links.csv> [--out <report.md>] [--gsc-property <site>]`: routine 2 of the sitemap family. Compares the sitemap URL set against the GSC "Top internally-linked pages" export and writes a Markdown report with two sections: **sitemap-only** (orphan candidates — weakly linked; action: add internal links) and **GSC-only** (sitemap gaps or stray legacy URLs; action: verify live and add to sitemap or fix href). URL normalization: lowercase scheme+host, no fragment, no trailing slash on non-root paths, canonical percent-encoding. URLs with query strings are flagged separately (potential noise). When `--sitemap` is an origin it enumerates live (same robots.txt → sitemap index → urlsets walk as `site_checks sitemap`); when it is a CSV it consumes routine 1's `sitemap-urls.csv` directly — the dependency is soft (the script can enumerate live). Optional `--gsc-property <site>` spawns `seodeck_gsc.js querypages` and adds a third section: pages receiving GSC impressions that are absent from the sitemap — the highest-priority sitemap gaps. The `diff-gsc` action in the `sitemap/` instrument card wires this, reusing the GSC export already in `../internal-links/`.
+
+All print JSON (or write files) — a card step redirects to a file next to the artifact it is building (e.g. `node .flowdeck/.seodeck/_scripts/seodeck_gsc.js fetch --site sc-domain:example.com > gsc.json`).
+
+**Sleeve residents & `sleeveCards`:**
+
+The manifest's `sleeveCards` field lists exactly one card: `seodeck-init`. It is a **ritual** (`lifecycle: ritual`, `recurrence: on-demand`): `flowdeck install seodeck` copies it into the deck's own `_sleeve/` (`.flowdeck/.seodeck/_sleeve/`) and plays it in place; replaying it is `flowdeck install seodeck --repair` (every step create-if-missing). It is never melded.
+
+`sleeveCards` holds no operational instruments beyond init — both seodeck instruments (audits / plan) are folder-scoped and therefore folder cards under `.seodeck/`, not sleeve residents. A deck whose init is its only sleeve resident is the common case, per emaildeck's AGENT.md note.
+
+## Sitegrow heritage
+
+seodeck absorbed sitegrow's workflow knowledge when sitegrow-as-product wound down. The code — seven modules, `bin/`, `sql/` — stays archived at `~/ruco-dev/sitegrow` and is extracted **only when a card needs it**; never port a module preemptively.
+
+Extraction map (state as of sitegrow's 2026-05 `fullpicture` audit — everything dry-run/schema-level tested, zero live-WP end-to-end runs):
+
+| Archived asset | State | Extract when… |
+|---|---|---|
+| `module-e-scraper` (URL → clean HTML) | Complete. Playwright `networkidle` + plain-fetch fallback; strips nav, cookie banners, ads, scripts; respects `robots.txt`; 1 req/s | an audit card must fetch live URLs — a static `curl` misses JS-rendered content. Known caveat: heavily client-side SPAs can still lose content even under Playwright |
+| `module-b-html-to-data` (HTML → payload.json) | Complete; Zod-validated against `payload.schema.json` (frozen v1.1.0) | a card needs structured extraction of page content rather than a prose audit |
+| `module-f-prompt-to-site` (prompt → payload.json) | 38-line scaffold, no model call — **not working code** | `seodeck-generate-page` becomes a real card (module-f is its natural backend; budget for actual implementation, not just extraction) |
+| `module-g-elementor` (payload → Elementor page JSON) | Complete but zero tests; Elementor's page JSON is internal/undocumented and version-fragile | a card must write Elementor layouts |
+| `module-d-orchestrator` + `sitegrow-remote` WP plugin (REST namespace `sitegrow-remote/v1`) | Complete, dry-run tested; live-WP Application-Password auth path never exercised in production | a card must deploy content to WordPress over REST |
+| `sitegrow install` (`bin/sitegrow.mjs`, FTP deploy) | Working: uploads `wp-content/` by default, `--full` downloads latest WP core first; blueprint repo cloned to a temp dir; plugin always uploaded, no version comparison | a card must push theme/plugin files to a host reachable only over FTP |
+
+Boundaries inherited from the sitegrow roadmap: no hosted SaaS, no page builders beyond Elementor, no non-WordPress CMS targets. seodeck operates on file-based site repos; anything touching a live WordPress install is extract-on-demand.
