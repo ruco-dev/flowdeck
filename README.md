@@ -11,7 +11,7 @@ See [DECKS.md](DECKS.md) for the full registry, install instructions, and contri
 | Deck | Description |
 |---|---|
 | [`crunchdeck`](decks/crunchdeck/) | Product management — backlog, roadmap, ADR, inbox |
-| [`emaildeck`](decks/emaildeck/) | Gmail filter rules as flowdeck cards, run by a deterministic filter script |
+| [`emaildeck`](decks/emaildeck/) | Gmail as flowdeck cards — a deterministic filter/fetch runner (one card per message) plus a compose → push → sent outbound draft lifecycle |
 | [`gitdeck`](decks/gitdeck/) | GitHub repo vigilance — owned, competitor, provider repos |
 | [`webdeck`](decks/webdeck/) | Web search signals routed to crunchdeck |
 | [`notedeck`](decks/notedeck/) | Freeform notes as flowdeck cards |
