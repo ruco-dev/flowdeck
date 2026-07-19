@@ -1,0 +1,14 @@
+#!/bin/sh
+# Rejects commits that reintroduce an absolute /Users/ path into tracked
+# .claude/settings.json. The htllm MCP entry belongs only in gitignored
+# .claude/settings.local.json — see FLOWDECK.md "htllm" standing warning.
+# Install: git config core.hooksPath tools/hooks
+
+staged=$(git diff --cached --name-only -- .claude/settings.json)
+if [ -n "$staged" ]; then
+  if git show ":.claude/settings.json" | grep -q '/Users/'; then
+    echo "pre-commit: .claude/settings.json has an absolute /Users/ path staged." >&2
+    echo "  Move the entry to .claude/settings.local.json (gitignored) instead." >&2
+    exit 1
+  fi
+fi

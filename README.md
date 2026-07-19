@@ -31,3 +31,6 @@ flowdeck install <deck-name> --local
 See [DECKS.md](DECKS.md) for the contribution guide. Deck sources are checked
 mechanically — run `node tools/decks-lint.mjs` before opening a PR; CI runs it on every
 push and pull request.
+
+After cloning, run `git config core.hooksPath tools/hooks` once to enable the local
+pre-commit guard against leaking absolute local paths into tracked config.

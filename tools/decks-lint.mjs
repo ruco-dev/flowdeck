@@ -305,6 +305,15 @@ function checkRegistry(decks, manifests) {
   }
 }
 
+// --- Check 8: no-local-path-leak -------------------------------------------
+function checkNoLocalPathLeak() {
+  const p = path.join(REPO_ROOT, '.claude', 'settings.json')
+  if (!exists(p)) return
+  if (readText(p).includes('/Users/')) {
+    report('(repo)', 'no-local-path-leak', `.claude/settings.json contains an absolute /Users/ path — move the entry to gitignored .claude/settings.local.json`)
+  }
+}
+
 // --- Run ------------------------------------------------------------------
 const decks = deckNames()
 if (decks.length === 0) {
@@ -323,6 +332,7 @@ for (const deck of decks) {
   checkCrossrefs(deck, root, manifest)
 }
 checkRegistry(decks, manifests)
+checkNoLocalPathLeak()
 
 for (const f of findings) {
   console.log(`${f.severity} ${f.deck}: ${f.check} — ${f.message}`)
