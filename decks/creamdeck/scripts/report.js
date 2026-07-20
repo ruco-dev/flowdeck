@@ -22,6 +22,7 @@ function resolveDir(plain) {
 }
 
 const ticketsDir = resolveDir('tickets')
+const closedTicketsDir = resolveDir('closed-tickets')
 const reportPath = join(ticketsDir, 'REPORT.md')
 
 const STAGE_ORDER = ['New', 'Open', 'Awaiting Quote', 'Waiting', 'Blocked', 'Resolved', 'Closed']
@@ -67,27 +68,34 @@ function daysSince(dateStr) {
   return Math.floor((today - d) / 86400000)
 }
 
-const tickets = readdirSync(ticketsDir, { withFileTypes: true })
-  .filter(e => e.isDirectory())
-  .map(e => {
-    const mdPath = join(ticketsDir, e.name, 'TICKET.md')
-    if (!existsSync(mdPath)) return null
-    const src = readFileSync(mdPath, 'utf8')
-    const fields = parseTable(src)
-    return {
-      id: fields['ID'] ?? e.name,
-      title: title(src),
-      status: fields['Status'] ?? '',
-      priority: fields['Priority'] ?? 'medium',
-      stage: fields['Stage'] ?? 'New',
-      contact: fields['Contact'] ?? '',
-      opened: fields['Opened'] ?? '',
-      closed: fields['Closed'] ?? '',
-      lastUpdate: lastUpdateDate(src),
-      hoursReal: (r => isNaN(r) ? null : Math.ceil(r))(parseFloat(fields['Hours Real'])),
-    }
-  })
-  .filter(Boolean)
+function loadTickets(dir) {
+  if (!existsSync(dir)) return []
+  return readdirSync(dir, { withFileTypes: true })
+    .filter(e => e.isDirectory())
+    .map(e => {
+      const mdPath = join(dir, e.name, 'TICKET.md')
+      if (!existsSync(mdPath)) return null
+      const src = readFileSync(mdPath, 'utf8')
+      const fields = parseTable(src)
+      return {
+        id: fields['ID'] ?? e.name,
+        title: title(src),
+        status: fields['Status'] ?? '',
+        priority: fields['Priority'] ?? 'medium',
+        stage: fields['Stage'] ?? 'New',
+        contact: fields['Contact'] ?? '',
+        opened: fields['Opened'] ?? '',
+        closed: fields['Closed'] ?? '',
+        lastUpdate: lastUpdateDate(src),
+        hoursReal: (r => isNaN(r) ? null : Math.ceil(r))(parseFloat(fields['Hours Real'])),
+      }
+    })
+    .filter(Boolean)
+}
+
+// Closed tickets live in closed-tickets/ (moved there by the close/close-ticket
+// action) but still count toward stage totals -- archived, not deleted.
+const tickets = [...loadTickets(ticketsDir), ...loadTickets(closedTicketsDir)]
 
 // ---------------------------------------------------------------------------
 // Group + sort

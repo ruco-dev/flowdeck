@@ -8,6 +8,7 @@ Project-scoped CRM for {{PROJECT_NAME}}. Tracks contacts and incoming communicat
 - `creamdeck-inbox/` — incoming items routed from emaildeck or logged manually
 - `_contacts/` — one subfolder per tracked contact
 - `tickets/` — open support or project tickets
+- `closed-tickets/` — closed tickets, archived here (not deleted) via `close`/`close-ticket`; `reopen` moves one back
 - `proposals/` — priced proposals; approval mints a per-item hash tickets can reference
 - `request-notes/` — order/work confirmations generated from an approved proposal
 - `invoices/` — invoices generated from a confirmed request note, with an `invoice-export.json` ready for a future financial-app connector
@@ -17,6 +18,7 @@ Project-scoped CRM for {{PROJECT_NAME}}. Tracks contacts and incoming communicat
 - Play `creamdeck-inbox/TODO.md` to surface and route unread items.
 - Play a contact card to review interactions and draft follow-ups.
 - Play `tickets/TODO.md` to see open tickets by stage.
+- Play `closed-tickets/TODO.md` to see closed tickets, or `reopen` one.
 - Play `proposals/TODO.md` to see proposals by status.
 - Play `request-notes/TODO.md` to see request notes by status.
 - Play `invoices/TODO.md` to see invoices by status.

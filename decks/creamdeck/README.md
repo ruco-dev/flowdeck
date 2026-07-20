@@ -2,7 +2,9 @@
 
 Project-scoped CRM — contacts, a unified email/call inbox, and a ticket
 pipeline with `REPORT.md` + static HTML report exports; tickets can spawn a
-calendardeck meeting via `add-meeting`. Also a proposal → request note →
+calendardeck meeting via `add-meeting`. Closing a ticket to Closed (not
+Resolved) archives it to `closed-tickets/` — moved, not deleted, and still
+counted in reports; `reopen` brings one back. Also a proposal → request note →
 invoice billing chain — approving a proposal mints a per-item hash
 (`approve-proposal.js`) that a ticket's `Billing Ref` can point to; invoices
 export a provider-agnostic `invoice-export.json` (`export-invoice.js`) for a

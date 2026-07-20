@@ -27,6 +27,7 @@ recurrence: on-demand
   - `.flowdeck/.creamdeck/creamdeck-inbox/`
   - `.flowdeck/.creamdeck/_contacts/`
   - `.flowdeck/.creamdeck/tickets/`
+  - `.flowdeck/.creamdeck/closed-tickets/`
   - `.flowdeck/.creamdeck/proposals/`
   - `.flowdeck/.creamdeck/request-notes/`
   - `.flowdeck/.creamdeck/invoices/`
@@ -209,10 +210,35 @@ recurrence: on-demand
   <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
 
   - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
-  - [ ] close-ticket — prompt for ticket slug; set Stage to Closed and fill Closed date in `TICKET.md`
-  - [ ] generate-report — rebuild `tickets/REPORT.md` from live ticket data without bot intervention; run `node .flowdeck/.creamdeck/_scripts/report.js` from the project root
-  - [ ] export-report — generate a static HTML report from live ticket data; run `node .flowdeck/.creamdeck/_scripts/html.js` from the project root; output: `.flowdeck/.creamdeck/_report/` (existing user assets in `_report/` are preserved)
+  - [ ] close-ticket — prompt for ticket slug; set Stage in `TICKET.md` to Resolved or Closed as directed. If **Resolved**: fill the Resolution section, ticket stays in `tickets/`. If **Closed**: fill the Closed date, then move `tickets/<id>/` to `closed-tickets/<id>/` (git mv if tracked, plain mv otherwise; check `.flowdeck/.creamdeck/closed-tickets/` exists first — it's pre-created by init, but scaffold `closed-tickets/TODO.md` too if somehow missing, same shape as this card's own scaffold below).
+  - [ ] generate-report — rebuild `tickets/REPORT.md` from live ticket data without bot intervention; run `node .flowdeck/.creamdeck/_scripts/report.js` from the project root (scans both `tickets/` and `closed-tickets/`)
+  - [ ] export-report — generate a static HTML report from live ticket data; run `node .flowdeck/.creamdeck/_scripts/html.js` from the project root; output: `.flowdeck/.creamdeck/_report/` (existing user assets in `_report/` are preserved; scans both `tickets/` and `closed-tickets/`)
   - [ ] export-report --lang <code> — translated HTML copy; the agent reads each `TICKET.md`, translates title/description/updates/resolution into the target language, writes the result to `.flowdeck/.creamdeck/_report/<code>/.translations.json` (per ticket ID → `{ title, description, updates, resolution }`), then runs `node .flowdeck/.creamdeck/_scripts/html.js --lang <code>` to render the localized tree under `_report/<code>/`
+
+  #### COMMENTS
+  ```
+
+- [ ] Create `.flowdeck/.creamdeck/closed-tickets/TODO.md` if it does not already exist:
+  ```markdown
+  ---
+  lifecycle: recurring
+  recurrence: on-demand
+  ---
+
+  # closed-tickets
+
+  ## BOT
+
+  - [ ] List all subdirectories in this folder. For each, read `TICKET.md` — extract title, ID, priority, contact, and Closed date.
+  - [ ] Surface closed tickets under `## HUMAN`, grouped by month closed, most recent first.
+
+  ## HUMAN
+
+  ## ACTIONS
+
+  <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+
+  - [ ] reopen — prompt for a ticket ID or folder; move it from `closed-tickets/<id>/` back to `tickets/<id>/`, set Stage to Open, and clear the Closed date in `TICKET.md`
 
   #### COMMENTS
   ```

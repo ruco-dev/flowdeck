@@ -27,7 +27,7 @@ lifecycle: one-shot
   <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
 
   - [ ] open-ticket — scaffold a new ticket card from `_energy-cards/TICKET.md.template`; ask for title, priority (high/medium/low), stage (default: New), linked contact slug, and description. Auto-generate the ticket ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing ticket subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZ29062026001`). Use this ID as the folder name and as `{{TICKET_ID}}` in the scaffolded `TICKET.md`. If opened from an emaildeck email, record the source message path and write the new ticket ID back into that message's `EMAIL.md` `| Ticket |` field.
-  - [ ] close-ticket — prompt for ticket slug; set Stage to Closed and fill Closed date in `TICKET.md`
+  - [ ] close-ticket — prompt for ticket slug; set Stage in `TICKET.md` to Resolved or Closed as directed. If **Resolved**: fill the Resolution section, ticket stays in `tickets/`. If **Closed**: fill the Closed date, then move `tickets/<id>/` to `closed-tickets/<id>/` (git mv if tracked, plain mv otherwise; check `.flowdeck/.creamdeck/closed-tickets/` exists first — it's pre-created by `creamdeck-init`, but scaffold `closed-tickets/TODO.md` too if somehow missing — see `creamdeck-init`'s own scaffold for its exact shape).
 
   #### COMMENTS
   ```
@@ -64,7 +64,7 @@ lifecycle: one-shot
   - [ ] draft-reply — create a Gmail draft via emaildeck to the linked contact
   - [ ] add-meeting — schedule a meeting for this ticket in calendardeck (see creamdeck AGENT.md)
   - [ ] link-proposal-item — prompt for a proposal ID and item number; verify the item's Hash in that `PROPOSAL.md` is minted (run `mark-approved` on the proposal first if not); write `<proposal-id>#<item-number> · <hash>` into this ticket's `Billing Ref` field
-  - [ ] close — mark ticket Resolved or Closed; populate Resolution in `TICKET.md`
+  - [ ] close — mark ticket Resolved or Closed; populate Resolution in `TICKET.md`. If Closed: fill the Closed date, then move this ticket's folder from `tickets/<id>/` to `closed-tickets/<id>/` (git mv if tracked, plain mv otherwise; check `.flowdeck/.creamdeck/closed-tickets/` exists first — it's pre-created by `creamdeck-init`, but scaffold `closed-tickets/TODO.md` too if somehow missing). Resolved tickets stay in `tickets/`.
 
   #### COMMENTS
   ```

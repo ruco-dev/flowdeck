@@ -34,6 +34,7 @@ function resolveDir(plain) {
 }
 
 const ticketsDir = resolveDir('tickets')
+const closedTicketsDir = resolveDir('closed-tickets')
 
 const langIdx = process.argv.indexOf('--lang')
 const lang = langIdx !== -1 ? process.argv[langIdx + 1] : null
@@ -86,31 +87,38 @@ function tr(id, field, fallback) {
 const STAGE_ORDER = ['New', 'Open', 'Awaiting Quote', 'Waiting', 'Blocked', 'Resolved', 'Closed']
 const PRIORITY_ORDER = ['high', 'medium', 'low']
 
-const tickets = readdirSync(ticketsDir, { withFileTypes: true })
-  .filter(e => e.isDirectory())
-  .map(e => {
-    const mdPath = join(ticketsDir, e.name, 'TICKET.md')
-    if (!existsSync(mdPath)) return null
-    const src = readFileSync(mdPath, 'utf8')
-    const f = parseTable(src)
-    const id = f['ID'] ?? e.name
-    return {
-      id,
-      title:       tr(id, 'title',       ticketTitle(src)),
-      priority:    f['Priority'] ?? 'medium',
-      stage:       f['Stage'] ?? 'New',
-      contact:     f['Contact'] ?? '',
-      opened:      f['Opened'] ?? '',
-      closed:      f['Closed'] ?? '',
-      hoursEst:    f['Hours Est.'] ?? '',
-      hoursReal:   f['Hours Real'] ?? '',
-      lastUpdate:  lastUpdateDate(src),
-      description: tr(id, 'description', extractSection(src, 'Description')),
-      updates:     tr(id, 'updates',     extractSection(src, 'Updates')),
-      resolution:  tr(id, 'resolution',  extractSection(src, 'Resolution')),
-    }
-  })
-  .filter(Boolean)
+function loadTickets(dir) {
+  if (!existsSync(dir)) return []
+  return readdirSync(dir, { withFileTypes: true })
+    .filter(e => e.isDirectory())
+    .map(e => {
+      const mdPath = join(dir, e.name, 'TICKET.md')
+      if (!existsSync(mdPath)) return null
+      const src = readFileSync(mdPath, 'utf8')
+      const f = parseTable(src)
+      const id = f['ID'] ?? e.name
+      return {
+        id,
+        title:       tr(id, 'title',       ticketTitle(src)),
+        priority:    f['Priority'] ?? 'medium',
+        stage:       f['Stage'] ?? 'New',
+        contact:     f['Contact'] ?? '',
+        opened:      f['Opened'] ?? '',
+        closed:      f['Closed'] ?? '',
+        hoursEst:    f['Hours Est.'] ?? '',
+        hoursReal:   f['Hours Real'] ?? '',
+        lastUpdate:  lastUpdateDate(src),
+        description: tr(id, 'description', extractSection(src, 'Description')),
+        updates:     tr(id, 'updates',     extractSection(src, 'Updates')),
+        resolution:  tr(id, 'resolution',  extractSection(src, 'Resolution')),
+      }
+    })
+    .filter(Boolean)
+}
+
+// Closed tickets live in closed-tickets/ (moved there by the close/close-ticket
+// action) but still count toward stage totals -- archived, not deleted.
+const tickets = [...loadTickets(ticketsDir), ...loadTickets(closedTicketsDir)]
   .sort((a, b) => {
     const sd = STAGE_ORDER.indexOf(a.stage) - STAGE_ORDER.indexOf(b.stage)
     return sd !== 0 ? sd : PRIORITY_ORDER.indexOf(a.priority) - PRIORITY_ORDER.indexOf(b.priority)

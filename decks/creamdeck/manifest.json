@@ -1,6 +1,6 @@
 {
   "name": "creamdeck",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "installRoot": ".creamdeck",
   "agentMd": "AGENT.md",
   "blueprints": [
@@ -50,5 +50,5 @@
       "to": "_report"
     }
   ],
-  "description": "Project-scoped CRM — contacts, a unified email/call inbox, a ticket pipeline with REPORT.md + static HTML report exports, and a proposal → request note → invoice billing chain with per-item approval hashes"
+  "description": "Project-scoped CRM — contacts, a unified email/call inbox, a ticket pipeline (closing archives to closed-tickets/, reopen brings it back) with REPORT.md + static HTML report exports, and a proposal → request note → invoice billing chain with per-item approval hashes"
 }

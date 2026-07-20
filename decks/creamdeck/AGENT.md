@@ -8,6 +8,7 @@ The `.flowdeck/.creamdeck/` directory is a minimal, project-scoped CRM deck. It 
 **Per-instance cards:**
 - `.flowdeck/.creamdeck/_contacts/<slug>/` — `CONTACT.md` + `TODO.md` — one per tracked contact; created from an inbox item or directly via `creamdeck-add-contact`
 - `.flowdeck/.creamdeck/tickets/<YYYY-MM-DD>-<slug>/` — `TICKET.md` + `TODO.md` — one per ticket; opened via `creamdeck-open-ticket` or the `open-ticket` action in `tickets/TODO.md`
+- `.flowdeck/.creamdeck/closed-tickets/<YYYY-MM-DD>-<slug>/` — a closed ticket, moved here (not deleted) by the `close` / `close-ticket` action when Stage is set to Closed; `reopen` in `closed-tickets/TODO.md` moves it back to `tickets/`
 - `.flowdeck/.creamdeck/proposals/<YYYY-MM-DD>-<slug>/` — `PROPOSAL.md` + `TODO.md` — one per proposal; opened via `creamdeck-new-proposal` or the `new-proposal` action in `proposals/TODO.md`
 - `.flowdeck/.creamdeck/request-notes/<YYYY-MM-DD>-<slug>/` — `REQUEST-NOTE.md` + `TODO.md` (+ `attachments/`) — one per request note; always generated from an approved proposal via its `generate-request-note` action, never opened cold
 - `.flowdeck/.creamdeck/invoices/<YYYY-MM-DD>-<slug>/` — `INVOICE.md` + `invoice-export.json` + `TODO.md` — one per invoice; always generated from a request note (or, if that step is skipped, directly from a proposal) via its `generate-invoice` action
@@ -23,6 +24,7 @@ The `.flowdeck/.creamdeck/` directory is a minimal, project-scoped CRM deck. It 
 2. Ticket card is played — bot surfaces summary and flags stale Waiting tickets
 3. Human advances stage, logs updates, drafts replies, or closes the ticket
 4. Stage sequence: New → Open → Awaiting Quote → Waiting → Blocked → Resolved → Closed (a ticket may skip stages or move back; the pipeline is a guide, not a gate)
+5. Closing to **Closed** specifically (not Resolved) moves the ticket folder from `tickets/<id>/` to `closed-tickets/<id>/` — archived, not deleted. `report.js`/`html.js` scan both directories, so closed tickets still count toward stage totals and reports. `reopen` (an action on `closed-tickets/TODO.md`) moves a ticket back to `tickets/<id>/` and resets Stage to Open.
 
 **Billing lifecycle:** a proposal → request note → invoice chain, mirroring the standard Orçamento → Nota de Encomenda → Fatura sequence (the same shape Moloni uses). Each step is independent of the ticket/hours system — it does not read from `TICKET.md`'s `Hours Real`; a ticket only *references* an approved proposal item once linked.
 
@@ -61,8 +63,8 @@ The manifest's `sleeveCards` field lists exactly one card: `creamdeck-init`. It 
 
 `creamdeck-init` installs two scripts into `.flowdeck/.creamdeck/_scripts/`. Run them from the project root via the `tickets/TODO.md` ACTIONS (never as bare `node …` commands in user-facing docs):
 
-- `_scripts/report.js` — rebuilds `tickets/REPORT.md` (hours subtotals per stage + grand total). Action: `generate-report`.
-- `_scripts/html.js` — renders a static HTML site under `_report/`. Action: `export-report`.
+- `_scripts/report.js` — rebuilds `tickets/REPORT.md` (hours subtotals per stage + grand total), scanning both `tickets/` and `closed-tickets/`. Action: `generate-report`.
+- `_scripts/html.js` — renders a static HTML site under `_report/`, same dual-directory scan. Action: `export-report`.
 - `_scripts/html.js --lang <code>` — renders a localized copy under `_report/<code>/`. Action: `export-report --lang <code>`.
 
 **Translation flow** (`export-report --lang`): the agent reads each `TICKET.md`, translates `title` / `description` / `updates` / `resolution` into the target language, writes them to `_report/<code>/.translations.json` (keyed by ticket ID), then re-runs `_scripts/html.js --lang <code>`. The script renders from that manifest, falling back to the original text for any missing ticket or field.

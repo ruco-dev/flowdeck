@@ -5,6 +5,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **creamdeck: closed-tickets archive** (creamdeck v0.7.0 → **v0.8.0**) — Closing a ticket to **Closed** (not Resolved) now moves its folder to a new `closed-tickets/` sibling via `close`/`close-ticket` — archived, not deleted — with a `reopen` action to bring one back; mirrors farmdeck's `won/`/`dropped/` pattern. `report.js`/`html.js` scan both `tickets/` and `closed-tickets/` so archived tickets stay counted in stage totals and HTML reports.
+
 ## [v0.2.0] — 2026-07-19
 
 ### Added
