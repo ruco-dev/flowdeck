@@ -32,7 +32,7 @@
     "scripts/approve-proposal.js",
     "scripts/export-invoice.js",
     "scripts/client-report.js",
-    "scripts/moloni-export.js"
+    "scripts/financial-export.js"
   ],
   "renameRegistry": [
     {

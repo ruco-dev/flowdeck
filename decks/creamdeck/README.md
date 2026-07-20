@@ -14,10 +14,12 @@ Resolved/Closed.
 
 Any billing document can also produce **client-facing exports** (all draft-not-send):
 a client-safe `client-report.html` (`client-report.js` — a whitelist projection
-that never reads the internal Hash column / Notes / Updates), a Moloni **proforma**
-+ import payload for invoices (`moloni-export.js`; the certified invoice is still
-issued by Moloni), and a cover email drafted from the document. Full action
-reference: [ACTIONS.md](ACTIONS.md).
+that never reads the internal Hash column / Notes / Updates), a **proforma**
++ provider import payload for invoices (`financial-export.js --provider <name>`;
+the platform is an option — Moloni today — and the certified invoice is still
+issued by the provider), and a cover email drafted from the document. Each action
+also files its human gate (review / fill IDs / send) as a `## HUMAN` task. Full
+action reference: [ACTIONS.md](ACTIONS.md).
 
 ## Install
 
