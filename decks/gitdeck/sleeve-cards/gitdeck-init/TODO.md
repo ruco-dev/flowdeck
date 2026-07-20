@@ -164,6 +164,8 @@ recurrence: on-demand
   <!-- Add your own actions below -->
   ```
 
+- [ ] Scaffold `.flowdeck/.gitdeck/README.md` from `_energy-cards/README.md.template`. Repair-safe: create it if missing; if it exists, regenerate it from the current template and refresh the stamp — unless a `.flowdeck/.gitdeck/.readme-hash` stamp already exists and no longer matches the file's current content (real evidence of a hand-edit since the last generation; a *missing* stamp is not such evidence and must not block regeneration). In that hand-edited case, leave it alone and note under `## HUMAN` that it's locally customized and may be out of sync. Write/refresh `.flowdeck/.gitdeck/.readme-hash` (sha256 of the file) after writing or confirming it.
+
 - [ ] Scaffold `.flowdeck/.gitdeck/AGENT.md` if it does not already exist — copy verbatim from `_energy-cards/gitdeck-AGENT.md`.
 
 - [ ] Commit **only if this replay changed anything** (a repair replay on an already-scaffolded project produces no diff): `git add .flowdeck/.gitdeck && git diff --cached --quiet || git commit -m "deck: init gitdeck"`.

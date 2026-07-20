@@ -31,36 +31,11 @@ recurrence: on-demand
   - `.flowdeck/.creamdeck/request-notes/`
   - `.flowdeck/.creamdeck/invoices/`
 
-- [ ] Install the report and billing scripts into `.flowdeck/.creamdeck/_scripts/`. Create the directory, then copy `report.js`, `html.js`, `approve-proposal.js`, and `export-invoice.js` into it from `.flowdeck/_scripts/creamdeck/` (populated by `flowdeck install creamdeck` per the manifest `scripts` array). If the scripts are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` actions will not run until they are.
+- [ ] Confirm the report and billing scripts are present at `.flowdeck/.creamdeck/_scripts/report.js`, `html.js`, `approve-proposal.js`, and `export-invoice.js` (installed there directly by `flowdeck install creamdeck` / `flowdeck update creamdeck`, since `installRoot` routes `manifest.scripts` straight into the deck's own `_scripts/` — no separate staging copy). If any are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` actions will not run until they are.
 
 - [ ] Add `.*` to `.flowdeck/.flowdeckignore` if not already present, so `.creamdeck/` is excluded from `flowdeck turn`.
 
-- [ ] Scaffold `.flowdeck/.creamdeck/README.md` if it does not already exist:
-  ```
-  # creamdeck
-
-  Project-scoped CRM for {{PROJECT_NAME}}. Tracks contacts and incoming communications
-  (emails, calls) relevant to this project.
-
-  ## Structure
-
-  - `creamdeck-inbox/` — incoming items routed from emaildeck or logged manually
-  - `_contacts/` — one subfolder per tracked contact
-  - `tickets/` — open support or project tickets
-  - `proposals/` — priced proposals; approval mints a per-item hash tickets can reference
-  - `request-notes/` — order/work confirmations generated from an approved proposal
-  - `invoices/` — invoices generated from a confirmed request note, with a `invoice-export.json` ready for a future financial-app connector
-
-  ## Usage
-
-  - Play `creamdeck-inbox/TODO.md` to surface and route unread items.
-  - Play a contact card to review interactions and draft follow-ups.
-  - Play `tickets/TODO.md` to see open tickets by stage.
-  - Play `proposals/TODO.md` to see proposals by status.
-  - Add a contact directly: `flowdeck blueprint use creamdeck-add-contact`.
-  - Open a ticket: `flowdeck blueprint use creamdeck-open-ticket`.
-  - Draft a proposal: `flowdeck blueprint use creamdeck-new-proposal`.
-  ```
+- [ ] Scaffold `.flowdeck/.creamdeck/README.md` from `_energy-cards/README.md.template`, substituting `{{PROJECT_NAME}}` (read `FLOWDECK.md` for the project name, falling back to `package.json`'s `name`). Repair-safe: create it if missing; if it exists, regenerate it from the current template and refresh the stamp — unless a `.flowdeck/.creamdeck/.readme-hash` stamp already exists and no longer matches the file's current content (real evidence of a hand-edit since the last generation; a *missing* stamp is not such evidence and must not block regeneration). In that hand-edited case, leave it alone and note under `## HUMAN` that it's locally customized and may be out of sync. Write/refresh `.flowdeck/.creamdeck/.readme-hash` (sha256 of the file) after writing or confirming it.
 
 - [ ] Create `.flowdeck/.creamdeck/creamdeck-inbox/TODO.md` if it does not already exist:
   ```markdown

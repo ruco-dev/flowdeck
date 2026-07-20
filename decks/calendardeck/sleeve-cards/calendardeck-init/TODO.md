@@ -208,28 +208,7 @@ recurrence: on-demand
   -->
   ```
 
-- [ ] Scaffold `.flowdeck/.calendardeck/README.md` if it does not already exist:
-  ```
-  # calendardeck
-
-  Google Calendar events as flowdeck cards. Sync is one-way: GCal → local.
-  To push a task to Google Calendar, use the `send-to-gcal` action in any card.
-
-  ## Beta access
-
-  calendardeck is in private beta. To request access, email hello@ruco.dev — you will be added as a tester and can then authorize via `flowdeck auth google`.
-
-  ## Slugs
-  - Day:   YYYYMMDD   (e.g. 20260601)
-  - Week:  YYYYMMWn   (e.g. 202606W1, W1 = days 1–7)
-  - Month: YYYYMM     (e.g. 202606)
-  - Year:  YYYY       (e.g. 2026)
-
-  ## Usage
-  - Sync: play `.calendardeck`
-  - Play a day: `flowdeck play .calendardeck/20260601`
-  - Add event from task: move `send-to-gcal` to `## BOT` in any card, then play it
-  ```
+- [ ] Scaffold `.flowdeck/.calendardeck/README.md` from `_energy-cards/README.md.template`. Repair-safe: create it if missing; if it exists, regenerate it from the current template and refresh the stamp — unless a `.flowdeck/.calendardeck/.readme-hash` stamp already exists and no longer matches the file's current content (real evidence of a hand-edit since the last generation; a *missing* stamp is not such evidence and must not block regeneration). In that hand-edited case, leave it alone and note under `## HUMAN` that it's locally customized and may be out of sync. Write/refresh `.flowdeck/.calendardeck/.readme-hash` (sha256 of the file) after writing or confirming it.
 
 - [ ] Surface under `## HUMAN`:
   - Path to `_sync/SYNC.md`. Calendar ID defaults to `primary` (main calendar) when authenticated — change it only to target a different calendar, a public GCal ID, or a direct `.ics` URL. Set `Sync Range` and optionally `Public Source` (a public GCal ID or ICS URL — defaults to US holidays; leave blank to disable).

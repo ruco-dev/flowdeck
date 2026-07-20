@@ -34,6 +34,7 @@ Add a `decks/<name>/` folder to this repo:
 ```
 decks/<name>/
   manifest.json          ← deck registry (see format below)
+  README.md               ← human-facing intro for the deck source — required
   AGENT.md               ← full deck reference — required
   AGENT-section.md       ← inline embed version; appended to .flowdeck/AGENT.md on --local install — required
   blueprints/
@@ -44,10 +45,22 @@ decks/<name>/
     <name>-sync/         ← if the deck pulls from an external source on demand
       TODO.md
   energy-cards/
+    README.md.template   ← scaffolds the live instance's own README.md — required
     *.md.template        ← one per document type; plain markdown, no frontmatter
 ```
 
 The folder name is the deck name. `flowdeck install <name>` resolves to `flowdeck/decks/<name>/manifest.json`.
+
+### Two READMEs, kept current by hand
+
+Every deck carries two README files, both maintained by whoever edits the deck — neither is generated automatically:
+
+- **`README.md`** (deck root) — read by someone browsing `flowdeck/decks/<name>/` in this repo. Describes what the deck is, how to install it, and its blueprints.
+- **`energy-cards/README.md.template`** — scaffolds `.flowdeck/.<name>/README.md` in an installed project. Describes the live instance's own structure for someone browsing that project's folder in git.
+
+**Whenever you change a deck's blueprints, energy cards, scripts, or `AGENT.md`, update both README files in the same change if the change affects what they describe.** Treat this the same as any other doc-drift rule in this codebase (e.g. `crunchdeck`'s release ritual diffing `README.md` against its own CHANGELOG) — the file that goes stale first is the one nobody re-reads before relying on it.
+
+Each `<name>-init` blueprint's README-scaffold step is repair-safe, not create-once: it hashes the live `README.md` after writing it (`.flowdeck/.<name>/.readme-hash`) and, on replay, regenerates the file from the current template unless that stamp already exists and no longer matches (real evidence of a hand-edit since the last generation, in which case it's left alone and flagged under `## HUMAN` as locally customized). A **missing** stamp — an install that predates this mechanism, e.g. — is not evidence of a hand-edit and must not block regeneration; treat it the same as "untouched" and generate the stamp going forward. (Discovered the hard way: an ambiguous first draft of this instruction let an agent read "no stamp" as "can't confirm untouched" and skip regenerating, leaving a live README stuck on pre-billing-chain content indefinitely.) `flowdeck update <name>` refreshes the staged `_energy-cards/README.md.template` automatically (like any other energy card) and prints a notice when that changes the deck's live-instance recipe, so you know a replay of `<name>-init` is worth running; it does not rewrite the installed `README.md` itself, for the same reason it never rewrites `CREAMDECK.md` or `PROFILE.md` — a project's live content isn't something a bare CLI command can safely re-render, only the model can, with the human's context.
 
 ### Deck-Design Principle
 

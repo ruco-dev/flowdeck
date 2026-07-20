@@ -213,7 +213,7 @@ recurrence: on-demand
 
 - [ ] Scaffold `.flowdeck/.crunchdeck/AGENT.md` if it does not already exist — copy verbatim from `_energy-cards/crunchdeck-AGENT.md`.
 
-- [ ] Scaffold `.flowdeck/.crunchdeck/README.md` from `_energy-cards/README.md.template` — substitute `{{PRODUCT_NAME}}` and `{{DATE}}` (today).
+- [ ] Scaffold `.flowdeck/.crunchdeck/README.md` from `_energy-cards/README.md.template`, substituting `{{PRODUCT_NAME}}` and `{{DATE}}` (today). Repair-safe: create it if missing; if it exists, regenerate it from the current template and refresh the stamp — unless a `.flowdeck/.crunchdeck/.readme-hash` stamp already exists and no longer matches the file's current content (real evidence of a hand-edit since the last generation; a *missing* stamp is not such evidence and must not block regeneration). In that hand-edited case, leave it alone and note under `## HUMAN` that it's locally customized and may be out of sync. Write/refresh `.flowdeck/.crunchdeck/.readme-hash` (sha256 of the file) after writing or confirming it.
 
 - [ ] Scaffold `.flowdeck/.crunchdeck/profile/PROFILE.md` from `_energy-cards/PROFILE.md.template` — substitute `{{PRODUCT_NAME}}`, `{{DATE}}`, and `{{PROMPT}}` from context.
 
