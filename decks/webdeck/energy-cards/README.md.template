@@ -1,0 +1,13 @@
+# webdeck
+
+Web search signals. Runs configured queries and routes findings to crunchdeck.
+
+## Usage
+- Configure queries: edit `QUERIES.md`, or `flowdeck blueprint use webdeck-add-query`
+- Run all queries: play `queries/TODO.md`
+- Findings land under `queries/<slug>/findings/` — activate `send-to-crunchdeck`, `create-card`, or `discard` on each
+
+## Structure
+- `QUERIES.md` — the query list (edit to add/remove queries)
+- `queries/<slug>/QUERY.md` + `TODO.md` — one per query, with a run log
+- `ACTIONS.md` — reference for finding-card actions

@@ -10,6 +10,7 @@
     "webdeck-init"
   ],
   "energyCards": [
+    "README.md.template",
     "QUERY.md.template",
     "FINDING.md.template"
   ],

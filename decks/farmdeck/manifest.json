@@ -10,6 +10,7 @@
     "farmdeck-init"
   ],
   "energyCards": [
+    "README.md.template",
     "PROSPECT.md.template",
     "INTERACTIONS.md.template",
     "PIPELINE.md.template",

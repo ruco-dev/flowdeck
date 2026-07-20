@@ -12,6 +12,7 @@
     "creamdeck-init"
   ],
   "energyCards": [
+    "README.md.template",
     "CONTACT.md.template",
     "INBOX-ITEM.md.template",
     "CREAMDECK.md.template",

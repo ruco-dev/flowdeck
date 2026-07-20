@@ -1,0 +1,25 @@
+# creamdeck — {{PROJECT_NAME}}
+
+Project-scoped CRM for {{PROJECT_NAME}}. Tracks contacts and incoming communications
+(emails, calls) relevant to this project.
+
+## Structure
+
+- `creamdeck-inbox/` — incoming items routed from emaildeck or logged manually
+- `_contacts/` — one subfolder per tracked contact
+- `tickets/` — open support or project tickets
+- `proposals/` — priced proposals; approval mints a per-item hash tickets can reference
+- `request-notes/` — order/work confirmations generated from an approved proposal
+- `invoices/` — invoices generated from a confirmed request note, with an `invoice-export.json` ready for a future financial-app connector
+
+## Usage
+
+- Play `creamdeck-inbox/TODO.md` to surface and route unread items.
+- Play a contact card to review interactions and draft follow-ups.
+- Play `tickets/TODO.md` to see open tickets by stage.
+- Play `proposals/TODO.md` to see proposals by status.
+- Play `request-notes/TODO.md` to see request notes by status.
+- Play `invoices/TODO.md` to see invoices by status.
+- Add a contact directly: `flowdeck blueprint use creamdeck-add-contact`.
+- Open a ticket: `flowdeck blueprint use creamdeck-open-ticket`.
+- Draft a proposal: `flowdeck blueprint use creamdeck-new-proposal`.

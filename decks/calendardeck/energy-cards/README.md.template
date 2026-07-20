@@ -1,0 +1,19 @@
+# calendardeck
+
+Google Calendar events as flowdeck cards. Sync is one-way: GCal → local.
+To push a task to Google Calendar, use the `send-to-gcal` action in any card.
+
+## Beta access
+
+calendardeck is in private beta. To request access, email hello@ruco.dev — you will be added as a tester and can then authorize via `flowdeck auth google`.
+
+## Slugs
+- Day:   YYYYMMDD   (e.g. 20260601)
+- Week:  YYYYMMWn   (e.g. 202606W1, W1 = days 1–7)
+- Month: YYYYMM     (e.g. 202606)
+- Year:  YYYY       (e.g. 2026)
+
+## Usage
+- Sync: play `.calendardeck`
+- Play a day: `flowdeck play .calendardeck/20260601`
+- Add event from task: move `send-to-gcal` to `## BOT` in any card, then play it

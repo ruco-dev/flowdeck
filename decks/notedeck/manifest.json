@@ -7,6 +7,8 @@
   "sleeveCards": [
     "notedeck-init"
   ],
-  "energyCards": [],
+  "energyCards": [
+    "README.md.template"
+  ],
   "description": "Freeform notes as flowdeck cards under .flowdeck/.notedeck/"
 }

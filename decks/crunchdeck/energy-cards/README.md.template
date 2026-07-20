@@ -8,11 +8,11 @@ Remove this HTML comment from the final output.
 
 Product management layer powered by [crunchdeck](https://github.com/ruco-dev/crunchdeck) + [flowdeck](https://github.com/ruco-dev/flowdeck). Initialized {{DATE}}.
 
-Each document lives inside a card folder alongside a `TODO.md`. This directory sits at `.flowdeck/.crunchdeck/` and is excluded from `flowdeck turn` — play cards explicitly: `flowdeck play .crunchdeck/_profile`.
+Each document lives inside a card folder alongside a `TODO.md`. This directory sits at `.flowdeck/.crunchdeck/` and is excluded from `flowdeck turn` — play cards explicitly: `flowdeck play .crunchdeck/profile`.
 
 ---
 
-## _profile/
+## profile/
 
 **`PROFILE.md`** is the slow-changing identity layer and the single source of truth for the product. It holds the canonical one-liner, elevator pitch, north-star metric, market lane, and tagline candidates. Everything else — launch copy, roadmap outcomes, pitch decks — references this document, never re-authors it.
 
@@ -20,7 +20,7 @@ Update it when the positioning changes, not every sprint. If you find yourself r
 
 ---
 
-## _backlog/
+## backlog/
 
 **`BACKLOG.md`** is the curated intake pipeline. It has two sides:
 
@@ -28,11 +28,11 @@ Update it when the positioning changes, not every sprint. If you find yourself r
 
 Backlog is not issue tracking (that's GitHub Issues reached via flowdeck cards) and not committed sequence (that's `ROADMAP.md`). Keep items at the strategic level.
 
-Signals arrive via `inbox/` — forwarded from emaildeck, gitdeck, or webdeck using `send-to-crunchdeck`. Route inbox cards to backlog using the `to-backlog` action.
+Signals arrive via `crunchdeck-inbox/` — forwarded from emaildeck, gitdeck, or webdeck using `send-to-crunchdeck`. Route inbox cards to backlog using the `to-backlog` action.
 
 ---
 
-## _roadmap/
+## roadmap/
 
 **`ROADMAP.md`** holds committed themes by horizon — **Now**, **Next**, **Later** — each outcome-oriented and tracing back to the north-star metric in `PROFILE.md`. Items enter via explicit promotion from `BACKLOG.md`; they don't appear here spontaneously.
 
@@ -54,9 +54,9 @@ Use `crunchdeck-adr` to open one: `flowdeck blueprint use crunchdeck-adr <slug>`
 
 ---
 
-## _launches/
+## launches/
 
-**`_launches/vX.Y.Z/`** is a per-release operational checklist. It gates the ship: product, docs, distribution, brand, measurement — all binary checks that must be green before publishing. It references `PROFILE.md` for copy; it does not restate it.
+**`launches/vX.Y.Z/`** is a per-release operational checklist. It gates the ship: product, docs, distribution, brand, measurement — all binary checks that must be green before publishing. It references `PROFILE.md` for copy; it does not restate it.
 
 Create one when a release is being prepared; archive it (move to `_meld/`) after the release ships. Launches are not strategy documents — they are pre-flight checklists.
 
@@ -64,11 +64,17 @@ Open questions that surface during a launch and resolve into real decisions shou
 
 ---
 
+## stats/
+
+**`STATS.md`** tracks the product's key operating metrics over time — a lightweight, hand-updated ledger, not a dashboard. Update it alongside `publish-readiness-audit` runs or whenever a metric materially moves.
+
+---
+
 ## Pipeline
 
 ```
 emaildeck / gitdeck / webdeck  (send-to-crunchdeck)
-  → inbox/
+  → crunchdeck-inbox/
   → Backlog / Roadmap / Decision
   → flowdeck cards / GitHub Issues
 ```

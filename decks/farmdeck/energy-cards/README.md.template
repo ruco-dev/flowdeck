@@ -1,0 +1,13 @@
+# farmdeck
+
+Prospection pipeline. Tracks contacts through Inbox → Seed → Nurture → Active → Won / Dropped.
+
+## Usage
+- Inbox: play `farmdeck-inbox/TODO.md`
+- Pipeline status: play `pipeline/TODO.md`
+- Prospects: play `prospects/TODO.md`
+- Add prospect: open `farmdeck-add-prospect` blueprint
+- Work a prospect: play `prospects/<slug>/TODO.md`
+
+## Programmatic intake
+flowdeck create-card farmdeck <column> <slug> --data '{"name":"...","email":"...","stage":"seed"}'

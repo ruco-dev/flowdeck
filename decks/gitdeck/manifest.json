@@ -10,6 +10,7 @@
     "gitdeck-init"
   ],
   "energyCards": [
+    "README.md.template",
     "REPO.md.template",
     "FINDING.md.template"
   ],

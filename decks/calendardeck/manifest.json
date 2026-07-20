@@ -8,6 +8,7 @@
     "calendardeck-init"
   ],
   "energyCards": [
+    "README.md.template",
     "SYNC.md.template",
     "DAY.md.template",
     "WEEK.md.template",

@@ -1,0 +1,7 @@
+# notedeck
+
+Freeform notes as flowdeck cards. Use it for research, meeting notes, drafts, or any unstructured content that benefits from being tracked alongside project work.
+
+## Usage
+- Add a note: create a new folder under `.flowdeck/.notedeck/` with its own `TODO.md`
+- No structured template — notes are plain markdown, shaped however the content calls for
