@@ -1,6 +1,6 @@
 {
   "name": "creamdeck",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "installRoot": ".creamdeck",
   "agentMd": "AGENT.md",
   "blueprints": [
@@ -19,14 +19,20 @@
     "TICKET.md.template",
     "PIPELINE.md.template",
     "PROPOSAL.md.template",
+    "PROPOSAL-PIPELINE.md.template",
     "REQUEST-NOTE.md.template",
-    "INVOICE.md.template"
+    "REQUEST-NOTE-PIPELINE.md.template",
+    "INVOICE.md.template",
+    "INVOICE-PIPELINE.md.template",
+    "EMAIL-DRAFT.md.template"
   ],
   "scripts": [
     "scripts/report.js",
     "scripts/html.js",
     "scripts/approve-proposal.js",
-    "scripts/export-invoice.js"
+    "scripts/export-invoice.js",
+    "scripts/client-report.js",
+    "scripts/moloni-export.js"
   ],
   "renameRegistry": [
     {

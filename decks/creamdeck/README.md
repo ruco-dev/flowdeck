@@ -6,9 +6,18 @@ calendardeck meeting via `add-meeting`. Closing a ticket to Closed (not
 Resolved) archives it to `closed-tickets/` — moved, not deleted, and still
 counted in reports; `reopen` brings one back. Also a proposal → request note →
 invoice billing chain — approving a proposal mints a per-item hash
-(`approve-proposal.js`) that a ticket's `Billing Ref` can point to; invoices
-export a provider-agnostic `invoice-export.json` (`export-invoice.js`) for a
-future financial-app connector.
+(`approve-proposal.js`) that a ticket's `Billing Ref` can point to at any
+Stage, since it proves authorization, not delivery; invoices export a
+provider-agnostic `invoice-export.json` (`export-invoice.js`) for a future
+financial-app connector, checking first that any linked ticket is actually
+Resolved/Closed.
+
+Any billing document can also produce **client-facing exports** (all draft-not-send):
+a client-safe `client-report.html` (`client-report.js` — a whitelist projection
+that never reads the internal Hash column / Notes / Updates), a Moloni **proforma**
++ import payload for invoices (`moloni-export.js`; the certified invoice is still
+issued by Moloni), and a cover email drafted from the document. Full action
+reference: [ACTIONS.md](ACTIONS.md).
 
 ## Install
 

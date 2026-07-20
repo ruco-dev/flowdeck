@@ -73,15 +73,19 @@ if (headerIdx !== -1) {
 const subtotal = items.reduce((sum, i) => sum + i.total, 0)
 const invoiceId = field('ID')
 
+// The — placeholder means "unset" in every template; coerce it to null so it
+// never reaches the export as a literal em dash.
+const orNull = (v) => (v && v !== '—' ? v : null)
+
 const doc = {
   id: invoiceId,
   status: field('Status'),
   issueDate: field('Date'),
-  dueDate: field('Due Date'),
+  dueDate: orNull(field('Due Date')),
   currency: field('Currency'),
   contact: field('Contact'),
-  proposalId: field('Proposal') || null,
-  requestNoteId: field('Request Note') || null,
+  proposalId: orNull(field('Proposal')),
+  requestNoteId: orNull(field('Request Note')),
   lines: items,
   totals: { subtotal, tax: 0, total: subtotal },
   _integration: "generic — map to your financial provider's document/line fields when connecting (e.g. Moloni)",

@@ -1,0 +1,26 @@
+# {{SUBJECT}}
+
+| Field | Value |
+|-------|-------|
+| Status | Draft — not sent |
+| To | {{TO_EMAIL}} |
+| Cc | — |
+| From | {{FROM_EMAIL}} |
+| Re | {{DOC_ID}} |
+| Attachments | {{ATTACHMENTS}} |
+| Language | {{LANG}} |
+| Drafted | {{DATE}} |
+
+## Body
+
+{{BODY}}
+
+---
+
+<!--
+Draft-not-send. This file is a cover email prepared from a proposal / request
+note / invoice; it is never dispatched by creamdeck. Review it, then send by hand
+or hand it to emaildeck to create a Gmail draft (emaildeck's draft-email action).
+Attach the client-safe artifact (client-report.html / invoice-proforma.html) —
+never the raw PROPOSAL.md / INVOICE.md, which carry the internal Notes/Updates.
+-->

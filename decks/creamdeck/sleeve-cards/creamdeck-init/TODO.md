@@ -32,7 +32,7 @@ recurrence: on-demand
   - `.flowdeck/.creamdeck/request-notes/`
   - `.flowdeck/.creamdeck/invoices/`
 
-- [ ] Confirm the report and billing scripts are present at `.flowdeck/.creamdeck/_scripts/report.js`, `html.js`, `approve-proposal.js`, and `export-invoice.js` (installed there directly by `flowdeck install creamdeck` / `flowdeck update creamdeck`, since `installRoot` routes `manifest.scripts` straight into the deck's own `_scripts/` — no separate staging copy). If any are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` actions will not run until they are.
+- [ ] Confirm the report and billing scripts are present at `.flowdeck/.creamdeck/_scripts/report.js`, `html.js`, `approve-proposal.js`, `export-invoice.js`, `client-report.js`, and `moloni-export.js` (installed there directly by `flowdeck install creamdeck` / `flowdeck update creamdeck`, since `installRoot` routes `manifest.scripts` straight into the deck's own `_scripts/` — no separate staging copy). If any are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` / `client-report` / `moloni-export` actions will not run until they are.
 
 - [ ] Add `.*` to `.flowdeck/.flowdeckignore` if not already present, so `.creamdeck/` is excluded from `flowdeck turn`.
 
@@ -62,6 +62,8 @@ recurrence: on-demand
 
   #### COMMENTS
   ```
+
+- [ ] Scaffold `.flowdeck/.creamdeck/ACTIONS.md` if it does not already exist — copy `ACTIONS.md` from the deck package verbatim (the action reference catalog; `flowdeck update creamdeck` refreshes it). If it exists, leave it unless it is unmodified from the package, in which case refresh it.
 
 - [ ] Scaffold `.flowdeck/.creamdeck/CREAMDECK.md` if it does not already exist — from `_energy-cards/CREAMDECK.md.template`, substituting `{{PROJECT_NAME}}`, `{{PROJECT_DESCRIPTION}}`, and `{{TICKET_PREFIX}}`. Derive `TICKET_PREFIX` from the project name: uppercase first 3 consonants or first 3 letters if unclear (e.g. `xyz-app` → `XYZ`, `mdblu` → `MDB`). Ask under `## HUMAN` if ambiguous.
 
@@ -243,6 +245,8 @@ recurrence: on-demand
   #### COMMENTS
   ```
 
+- [ ] Scaffold `.flowdeck/.creamdeck/proposals/PIPELINE.md` if it does not already exist — from `_energy-cards/PROPOSAL-PIPELINE.md.template`, substituting `{{PROJECT_NAME}}`.
+
 - [ ] Create `.flowdeck/.creamdeck/proposals/TODO.md` if it does not already exist:
   ```markdown
   # proposals
@@ -260,9 +264,13 @@ recurrence: on-demand
 
   - [ ] new-proposal — scaffold a new proposal card from `_energy-cards/PROPOSAL.md.template`; ask for title, linked contact slug, currency, valid-until date, and a line-item list (`description | qty | unit price` per line). Auto-generate the proposal ID: read `Prefix` from the `## Document IDs` table in `CREAMDECK.md`, count existing proposal subdirs for the sequence (zero-padded to 3 digits), and combine as `{PREFIX}P{DDMMYYYY}{SEQ}` using today's date (e.g. `XYZP29062026001`). Compute each item's Total as qty × unit price; leave every Hash cell `—`.
   - [ ] mark-approved — prompt for a proposal ID or folder name; run `node .flowdeck/.creamdeck/_scripts/approve-proposal.js <id-or-folder>` from the project root to mint item hashes and set Status to Approved
+  - [ ] client-report — prompt for a proposal ID or folder; run `node .flowdeck/.creamdeck/_scripts/client-report.js <id-or-folder> [--lang <code>]` from the project root to render a client-safe `client-report.html` (never reads Hash / Notes / Updates). Review before sending. See `ACTIONS.md`.
+  - [ ] draft-email — compose a cover email from this proposal into `<folder>/email-draft/EMAIL.md` (from `_energy-cards/EMAIL-DRAFT.md.template`), attaching `client-report.html`, never the raw `PROPOSAL.md`. Draft-not-send. See `ACTIONS.md`.
 
   #### COMMENTS
   ```
+
+- [ ] Scaffold `.flowdeck/.creamdeck/request-notes/PIPELINE.md` if it does not already exist — from `_energy-cards/REQUEST-NOTE-PIPELINE.md.template`, substituting `{{PROJECT_NAME}}`.
 
 - [ ] Create `.flowdeck/.creamdeck/request-notes/TODO.md` if it does not already exist:
   ```markdown
@@ -281,9 +289,13 @@ recurrence: on-demand
 
   - [ ] attach-pdf — prompt for a request note ID or folder and a PDF path; copy the file into `request-notes/<id>/attachments/` and record its relative path in the `Source PDF` field
   - [ ] mark-confirmed — prompt for a request note ID or folder; set Status to Confirmed in `REQUEST-NOTE.md`
+  - [ ] client-report — prompt for a request note ID or folder; run `node .flowdeck/.creamdeck/_scripts/client-report.js <id-or-folder> [--lang <code>]` from the project root to render a client-safe `client-report.html` (never reads Hash / Notes / Updates). Review before sending. See `ACTIONS.md`.
+  - [ ] draft-email — compose a cover email from this request note into `<folder>/email-draft/EMAIL.md`, attaching `client-report.html`, never the raw `REQUEST-NOTE.md`. Draft-not-send. See `ACTIONS.md`.
 
   #### COMMENTS
   ```
+
+- [ ] Scaffold `.flowdeck/.creamdeck/invoices/PIPELINE.md` if it does not already exist — from `_energy-cards/INVOICE-PIPELINE.md.template`, substituting `{{PROJECT_NAME}}`.
 
 - [ ] Create `.flowdeck/.creamdeck/invoices/TODO.md` if it does not already exist:
   ```markdown
@@ -303,6 +315,9 @@ recurrence: on-demand
   - [ ] mark-issued — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/export-invoice.js <id-or-folder>` from the project root to write `invoice-export.json`, then set Status to Issued in `INVOICE.md`
   - [ ] mark-paid — prompt for an invoice ID or folder; set Status to Paid and fill the Paid date in `INVOICE.md`
   - [ ] void — prompt for an invoice ID or folder; set Status to Cancelled in `INVOICE.md`
+  - [ ] client-report — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/client-report.js <id-or-folder> [--lang <code>]` from the project root to render a client-safe `client-report.html` (never reads Hash / Notes / Updates). Review before sending. See `ACTIONS.md`.
+  - [ ] moloni-export — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/moloni-export.js <id-or-folder> [--vat <rate>] [--lang <code>]` from the project root to write `invoice-proforma.html` (non-fiscal preview) + `invoice-moloni.json` (Moloni documents/insert payload; fill `_requires` IDs before POST). The certified invoice is issued by Moloni, not here. See `ACTIONS.md`.
+  - [ ] draft-email — compose a cover email from this invoice into `<folder>/email-draft/EMAIL.md`, attaching `invoice-proforma.html` (or `client-report.html`), never the raw `INVOICE.md`. Draft-not-send. See `ACTIONS.md`.
 
   #### COMMENTS
   ```
