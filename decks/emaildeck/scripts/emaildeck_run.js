@@ -7,6 +7,68 @@ import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+// ---------------------------------------------------------------------------
+// HTML → text
+// ---------------------------------------------------------------------------
+
+// Marketing / form-notification emails (Mailchimp, contact-form plugins, …)
+// are frequently HTML-only, with no text/plain alternative. Dumping that raw
+// markup into EMAIL.md buries the real content under <style>/<table> noise, so
+// when we fall back to the HTML part we render it down to readable text (light
+// markdown: **bold**, *italic*, [text](url), block breaks). Dependency-free.
+function decodeEntities(str) {
+  const named = {
+    amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+    hellip: '…', mdash: '—', ndash: '–', middot: '·', bull: '•',
+    rsquo: '’', lsquo: '‘', ldquo: '“', rdquo: '”',
+    copy: '©', reg: '®', trade: '™', euro: '€', pound: '£', deg: '°',
+  }
+  return str
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(parseInt(d, 10)))
+    .replace(/&([a-zA-Z][a-zA-Z0-9]*);/g, (_, n) => named[n] ?? `&${n};`)
+}
+
+function htmlToText(html) {
+  let s = html
+  // Drop everything that never renders as content.
+  s = s.replace(/<!--[\s\S]*?-->/g, '')                 // comments incl. MSO conditionals
+  s = s.replace(/<!doctype[^>]*>/gi, '')
+  s = s.replace(/<(style|script|title|head)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+
+  // Inline formatting → markdown (before generic tag stripping).
+  s = s.replace(/<a\b[^>]*\bhref\s*=\s*["']([^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi, (_, href, inner) => {
+    const text = inner.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+    const url = href.trim()
+    if (!url || url.startsWith('#') || /^javascript:/i.test(url)) return text
+    if (!text) return url
+    return text === url ? url : `[${text}](${url})`
+  })
+  const inlineMark = (tag, mark) =>
+    s = s.replace(new RegExp(`<(${tag})\\b[^>]*>([\\s\\S]*?)<\\/\\1>`, 'gi'), (_, __, t) => {
+      const inner = t.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim()
+      return inner ? `${mark}${inner}${mark}` : ''
+    })
+  inlineMark('strong|b', '**')
+  inlineMark('em|i', '*')
+
+  // Block boundaries → newlines; list items → bullets; cells → separators.
+  s = s.replace(/<br\s*\/?>/gi, '\n')
+  s = s.replace(/<li\b[^>]*>/gi, '\n- ')
+  s = s.replace(/<\/(p|div|tr|li|h[1-6]|table|blockquote|ul|ol)>/gi, '\n')
+  s = s.replace(/<\/t[dh]>/gi, ' ')
+
+  s = s.replace(/<[^>]+>/g, '')          // strip all remaining tags
+  s = decodeEntities(s)
+
+  // Normalise whitespace.
+  s = s.replace(/[ \t\u00a0]+/g, ' ')
+  s = s.split('\n').map(l => l.trim()).join('\n')
+  s = s.replace(/\n{3,}/g, '\n\n')
+  return s.trim()
+}
+
 const emaildeckDir = join(__dirname, '..')
 const flowdeckDir  = join(emaildeckDir, '..')
 
@@ -236,9 +298,12 @@ const gmailAdapter = {
       }
       return null
     }
-    const data = findPart(payload, 'text/plain') ?? findPart(payload, 'text/html')
-    if (!data) return ''
-    return Buffer.from(data.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8')
+    const decode = d => Buffer.from(d.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8')
+    const plain = findPart(payload, 'text/plain')
+    if (plain) return decode(plain)
+    const html = findPart(payload, 'text/html')
+    if (html) return htmlToText(decode(html))
+    return ''
   },
 
   getHeader(headers, name) {
@@ -345,6 +410,9 @@ const outlookAdapter = {
   },
 
   decodeBody(message) {
+    if (message.body?.contentType?.toLowerCase() === 'html' && message.body?.content) {
+      return htmlToText(message.body.content)
+    }
     return message.bodyPreview || message.body?.content || ''
   },
 

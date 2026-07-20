@@ -11,6 +11,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - **creamdeck: closed-tickets archive** (creamdeck v0.7.0 → **v0.8.0**) — Closing a ticket to **Closed** (not Resolved) now moves its folder to a new `closed-tickets/` sibling via `close`/`close-ticket` — archived, not deleted — with a `reopen` action to bring one back; mirrors farmdeck's `won/`/`dropped/` pattern. `report.js`/`html.js` scan both `tickets/` and `closed-tickets/` so archived tickets stay counted in stage totals and HTML reports.
 
+### Fixed
+
+- **emaildeck: HTML-only email bodies rendered to markdown** (emaildeck v0.10.0 → **v0.10.1**) — `emaildeck_run.js` used to write the raw `text/html` part into `EMAIL.md`'s `## Body` whenever a message had no `text/plain` alternative (Mailchimp, contact-form, ad-receipt and newsletter mails), burying the actual content under `<head>`/`<style>`/`<table>` markup. `decodeBody` now keeps preferring `text/plain` and routes the `text/html` fallback through a new dependency-free, self-contained `htmlToText()` (drops head/style/script/comments incl. MSO conditionals, converts links + bold, block boundaries → line breaks, decodes entities); the Outlook adapter renders HTML `body.content` too. The `emaildeck-backfill-bodies` blueprint's "strip tags" step was rewritten to render, not strip. 13 pre-existing raw-HTML cards were re-rendered in place. Rationale in new emaildeck `ADR-0001-html-body-rendering.md`.
+
 ## [v0.2.0] — 2026-07-19
 
 ### Added

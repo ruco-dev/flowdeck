@@ -44,6 +44,7 @@ The `.flowdeck/.emaildeck/` directory holds email filter rules as cards. Each fi
 - Resolves `filters/` and `mail-inbox/` by plain name, falling back to the `_`-prefixed legacy names — so it runs correctly in a not-yet-migrated instance
 - Refreshes OAuth token if needed (Gmail or Microsoft, auto-detects)
 - Deduplicates by checking existing **message IDs** in `mail-inbox/` EMAIL.md files (thread IDs from older thread-scoped cards are kept as a floor, so messages already captured under the old scheme aren't recreated)
+- Writes each message body to `## Body` preferring the `text/plain` part; HTML-only messages are rendered to readable markdown (`htmlToText`) so raw markup never lands in `EMAIL.md` (ADR-0001)
 - Derives date range from last Run Log entry (falls back to last 30 days)
 - Appends a row to `## Run Log` on every run
 - Includes `send-to-creamdeck` / `send-to-crunchdeck` in each new card's `## ACTIONS` menu automatically, if those decks exist
