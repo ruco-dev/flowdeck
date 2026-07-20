@@ -55,7 +55,7 @@ The manifest's `sleeveCards` field lists exactly one card: `creamdeck-init`. It 
 
 `sleeveCards` holds no operational instruments beyond init — every creamdeck standing card (`creamdeck-inbox/`, `_contacts/<slug>/`, `tickets/`) is scaffolded by the init ritual inline rather than shipped as a separate blueprint or sleeve resident, and none of them acts on a folder distinct enough to warrant a standalone folder card. the board's root `_sleeve/` is reserved for project-generic / cross-cutting instruments; a deck's own `_sleeve/` holds its rituals (e.g. the default `release` card); creamdeck adds none. A deck whose init is its only sleeve resident is the common case, per emaildeck's own AGENT.md note.
 
-The init ritual also installs `report.js` and `html.js` into `.flowdeck/.creamdeck/_scripts/` via the same `manifest.scripts` / `_scripts/` prefix convention emaildeck uses — see "Reports & exports" below for the runtime paths.
+`flowdeck install`/`update creamdeck` installs `report.js`, `html.js`, `approve-proposal.js`, and `export-invoice.js` straight into `.flowdeck/.creamdeck/_scripts/` — `manifest.scripts` routes there directly because `installRoot` is set, no separate staging copy involved. See "Reports & exports" below for the runtime paths.
 
 ## Reports & exports
 
