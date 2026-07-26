@@ -9,7 +9,7 @@ lifecycle: one-shot
 
 - [ ] Check `.flowdeck/.creamdeck/` exists. If not, stop and surface under `## HUMAN` to run `creamdeck-init` first.
 
-- [ ] Check `.flowdeck/.creamdeck/proposals/` exists. If not, create it and create `proposals/TODO.md` as the proposals overview card:
+- [ ] Check `.flowdeck/.creamdeck/proposals/` exists. If not, create it, scaffold `proposals/PIPELINE.md` from `_energy-cards/PROPOSAL-PIPELINE.md.template` (substitute `{{PROJECT_NAME}}` from `FLOWDECK.md` or `package.json`), and create `proposals/TODO.md` as the proposals overview card:
 
   ```markdown
   # proposals

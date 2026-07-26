@@ -1,0 +1,13 @@
+# Pipeline — {{PROJECT_NAME}} · Request Notes
+
+A request note only exists once generated from an approved proposal — there is no earlier stage.
+
+| Status | Meaning |
+|--------|---------|
+| Draft | Generated from an approved proposal; not yet sent |
+| Sent | Delivered to the contact |
+| Confirmed | Contact confirmed the order — ready for `generate-invoice` |
+
+## Notes
+
+<!-- Customise wording or add follow-up SLAs here. -->

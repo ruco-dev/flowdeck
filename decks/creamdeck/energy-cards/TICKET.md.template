@@ -21,6 +21,13 @@
 
 <!-- most recent first — format: **YYYY-MM-DD** · summary -->
 
+## Scheduled
+
+<!-- booked focus blocks — maintained by save-spots; one row per block. Sum of Hours ≥ ticket hours ⇒ fully scheduled. Scan this table to read the ticket's dates without walking the calendar. -->
+
+| Date | Time | Hours | GCal event |
+|------|------|-------|------------|
+
 ## Resolution
 
 <!-- populated when ticket is closed -->

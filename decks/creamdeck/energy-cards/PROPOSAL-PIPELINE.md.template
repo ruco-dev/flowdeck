@@ -1,0 +1,15 @@
+# Pipeline — {{PROJECT_NAME}} · Proposals
+
+Status moves forward as the proposal is sent and the contact responds. A rejected or expired proposal stays that way — draft a new one rather than reviving it.
+
+| Status | Meaning |
+|--------|---------|
+| Draft | Being drafted; not yet sent to the contact |
+| Sent | Delivered to the contact; awaiting a response |
+| Approved | Contact approved — `mark-approved` has minted every item's hash |
+| Rejected | Contact declined |
+| Expired | `Valid Until` passed with no response |
+
+## Notes
+
+<!-- Customise wording or add follow-up SLAs here. -->

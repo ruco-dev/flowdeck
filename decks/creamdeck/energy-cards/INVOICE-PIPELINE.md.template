@@ -1,0 +1,13 @@
+# Pipeline — {{PROJECT_NAME}} · Invoices
+
+| Status | Meaning |
+|--------|---------|
+| Draft | Generated from a request note (or directly from a proposal); not yet issued |
+| Issued | `mark-issued` run — `invoice-export.json` written, sent to the contact |
+| Paid | Payment confirmed |
+| Overdue | Past `Due Date`, not paid |
+| Cancelled | Voided via the `void` action |
+
+## Notes
+
+<!-- Customise wording or add follow-up SLAs here. -->
