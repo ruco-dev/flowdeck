@@ -9,12 +9,37 @@ Reference for every action creamdeck cards expose. An action is **paused** while
 | `_contacts/<name>/` | `draft-email`, `log-interaction`, `schedule-follow-up`, `route-to-crunchdeck`, `sync-from-inbox` |
 | `creamdeck-inbox/` | `create-inbox-item`; per item: `draft-reply`, `create-contact`, `log-to-contact`, `route-to-crunchdeck`, `schedule-follow-up`, `archive` |
 | `tickets/` | `open-ticket`, `close-ticket`, `generate-report`, `export-report`, `export-report --lang <code>`, `add-meeting` |
+| `billed-tickets/` | `settle-tickets`, `unbill`, `reopen` |
 | `closed-tickets/` | `reopen` |
 | `proposals/` | `new-proposal`, `mark-approved`, `send`, `mark-rejected`, `generate-request-note`, `log-update`, **`client-report`**, **`draft-email`** |
 | `request-notes/` | `attach-pdf`, `mark-confirmed`, `generate-invoice`, **`client-report`**, **`draft-email`** |
-| `invoices/` | `mark-issued`, `mark-paid`, `void`, **`client-report`**, **`financial-export`**, **`draft-email`** |
+| `invoices/` | **`create-invoice-from-tickets`**, `mark-issued`, `mark-paid`, `void`, **`client-report`**, **`financial-export`**, **`draft-email`** |
 
-The billing-chain actions (`mark-approved`, `generate-request-note`, `generate-invoice`, `mark-issued`, …) are covered in `AGENT.md` → "Billing lifecycle". The three client-facing actions are documented in full below.
+The billing-chain actions are covered in `AGENT.md` → "Billing lifecycle". The client-facing and ticket-billing actions are documented in full below.
+
+---
+
+## create-invoice-from-tickets
+
+Mint a `Draft` invoice from billable tickets in `tickets/` without writing a single line of numbers yourself.
+
+**Trigger:** `- [ ] create-invoice-from-tickets` on the `invoices/` card.
+
+**Step 1 — dry run.** Run `node .flowdeck/.creamdeck/_scripts/invoice-from-tickets.js --dry-run` from the project root. It prints a JSON summary: which tickets were selected, their billing kind/qty/price, and the net subtotal. Narrow the selection with `--tickets <id,id>` (explicit list) or `--stage <name>` (default: `Resolved`). Fix any ticket that shows up in `skipped` (set `Hours Real`, `Billing Rate`, or `Billing Kind` as indicated).
+
+**Step 2 — write the client description.** Read each selected ticket's `## Resolution`. Write a 2–3 sentence client-facing summary: no ticket IDs, no hours, no internal tool names. This is the only judgment step — everything else is arithmetic.
+
+**Step 3 — run for real.** `node .flowdeck/.creamdeck/_scripts/invoice-from-tickets.js --description "<summary>"`. The script: mints the invoice ID, scaffolds `invoices/<id>/INVOICE.md` + `TODO.md` as `Draft`, stamps `| Invoice | <id> |` into each billed `TICKET.md`, and moves those ticket folders to `billed-tickets/`.
+
+**Step 4 — report.** Surface the invoice ID, path, tickets billed/skipped, and net subtotal. Add under `## HUMAN`: *review `INVOICE.md` before running `mark-issued`*. Never advance Status in the same play.
+
+**Billing kinds** (declared per ticket in its `Billing Kind` field; default `hours`):
+- `hours` — qty = `Billing Qty` ?? `Hours Real`, unit Hour, rate from `## Services`
+- `fee` — qty = `Billing Qty` ?? 1, unit Fee, rate from `## Services` or `Billing Rate`
+- `sale` — qty = `Billing Qty` ?? 1, unit Item, rate from `Billing Rate` or `## Services`
+- `adhoc` — qty 1, price = `Billing Amount` (required); never grouped
+
+A ticket already carrying an `Invoice` value is skipped — a ticket is billed once.
 
 ---
 

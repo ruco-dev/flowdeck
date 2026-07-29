@@ -27,12 +27,13 @@ recurrence: on-demand
   - `.flowdeck/.creamdeck/creamdeck-inbox/`
   - `.flowdeck/.creamdeck/_contacts/`
   - `.flowdeck/.creamdeck/tickets/`
+  - `.flowdeck/.creamdeck/billed-tickets/`
   - `.flowdeck/.creamdeck/closed-tickets/`
   - `.flowdeck/.creamdeck/proposals/`
   - `.flowdeck/.creamdeck/request-notes/`
   - `.flowdeck/.creamdeck/invoices/`
 
-- [ ] Confirm the report and billing scripts are present at `.flowdeck/.creamdeck/_scripts/report.js`, `html.js`, `approve-proposal.js`, `export-invoice.js`, `client-report.js`, and `financial-export.js` (installed there directly by `flowdeck install creamdeck` / `flowdeck update creamdeck`, since `installRoot` routes `manifest.scripts` straight into the deck's own `_scripts/` — no separate staging copy). If any are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` / `client-report` / `financial-export` actions will not run until they are.
+- [ ] Confirm the report and billing scripts are present at `.flowdeck/.creamdeck/_scripts/report.js`, `html.js`, `approve-proposal.js`, `export-invoice.js`, `invoice-from-tickets.js`, `client-report.js`, and `financial-export.js` (installed there directly by `flowdeck install creamdeck` / `flowdeck update creamdeck`, since `installRoot` routes `manifest.scripts` straight into the deck's own `_scripts/` — no separate staging copy). If any are absent, note under `## HUMAN` that the scripts must be installed first (`flowdeck install creamdeck` or `flowdeck update creamdeck`) and the `generate-report` / `export-report` / `mark-approved` / `mark-issued` / `client-report` / `financial-export` actions will not run until they are.
 
 - [ ] Add `.*` to `.flowdeck/.flowdeckignore` if not already present, so `.creamdeck/` is excluded from `flowdeck turn`.
 
@@ -245,6 +246,40 @@ recurrence: on-demand
   #### COMMENTS
   ```
 
+- [ ] Create `.flowdeck/.creamdeck/billed-tickets/TODO.md` if it does not already exist:
+  ```markdown
+  ---
+  lifecycle: recurring
+  recurrence: on-demand
+  ---
+
+  # billed-tickets
+
+  Tickets that have been invoiced and are **waiting for payment**. A ticket lands here
+  when `create-invoice-from-tickets` (see `../ACTIONS.md`) bills it: its `TICKET.md`
+  carries an `Invoice` field naming the invoice it was billed on. It leaves here when
+  that invoice is paid (`settle-tickets` → `closed-tickets/`) or voided (`unbill` →
+  back to `tickets/`).
+
+  ## BOT
+
+  - [ ] List all subdirectories in this folder. For each, read `TICKET.md` — extract title, ID, `Invoice`, `Hours Real` (or its billing fields), and contact.
+  - [ ] Group them by `Invoice` under `## HUMAN`; for each invoice read `../invoices/<id>/INVOICE.md` and show its Status, Date, Due Date and total.
+  - [ ] Flag any invoice whose Status is `Issued` and whose Due Date has passed — those tickets are waiting on an overdue invoice.
+
+  ## HUMAN
+
+  ## ACTIONS
+
+  <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+
+  - [ ] settle-tickets — prompt for an invoice ID (default: every invoice whose Status is `Paid`); for each ticket here carrying that `Invoice`, set Stage to `Closed` and fill `Closed` with the invoice's `Paid` date in `TICKET.md`, then move `billed-tickets/<slug>/` to `closed-tickets/<slug>/` (git mv if tracked, plain mv otherwise)
+  - [ ] unbill — prompt for an invoice ID or ticket slug; move each matching ticket back to `tickets/<slug>/`, clear its `Invoice` field (set to `—`) and append `**{{DATE}}** · Unbilled from <invoice-id>` to its `## Updates`. Use after a `void` — the ticket becomes billable again on the next `create-invoice-from-tickets` run
+  - [ ] reopen — prompt for a ticket ID or folder; move it back to `tickets/<id>/` and set Stage to Open. Same as `closed-tickets/`'s `reopen`, but leaves the `Invoice` field intact — the work was already billed
+
+  #### COMMENTS
+  ```
+
 - [ ] Scaffold `.flowdeck/.creamdeck/proposals/PIPELINE.md` if it does not already exist — from `_energy-cards/PROPOSAL-PIPELINE.md.template`, substituting `{{PROJECT_NAME}}`.
 
 - [ ] Create `.flowdeck/.creamdeck/proposals/TODO.md` if it does not already exist:
@@ -299,25 +334,49 @@ recurrence: on-demand
 
 - [ ] Create `.flowdeck/.creamdeck/invoices/TODO.md` if it does not already exist:
   ```markdown
+  ---
+  lifecycle: recurring
+  recurrence: on-demand
+  ---
+
   # invoices
+
+  Every invoice of this project, one folder per invoice: `<invoice-id>/INVOICE.md` (the
+  document) + `<invoice-id>/TODO.md` (its own paused action menu). Invoices are minted
+  either from a confirmed request note (`../request-notes/` → `generate-invoice`) or
+  straight from the Resolved tickets in `../tickets/` (`create-invoice-from-tickets`).
+  Status runs `Draft → Issued → Paid`, with `Overdue` and `Cancelled` as side exits.
+
+  **Playing this card only reports.** The `## BOT` steps below read files and write a
+  status overview under `## HUMAN` — they never create, edit, export or send an invoice.
+  Everything that writes sits in `## ACTIONS`, paused, until a human moves a line into
+  `## BOT`. Action definitions: `../ACTIONS.md`. IDs, prefix and prices: `../CREAMDECK.md`
+  (`## Document IDs`, `## Services`).
 
   ## BOT
 
-  - [ ] List all subdirectories in this folder. For each, read `INVOICE.md` — extract title, ID, status, contact, due date, and total value (sum of the Items table's Total column).
-  - [ ] Surface invoices under `## HUMAN`, grouped by status (Draft, Issued, Paid, Overdue, Cancelled), flagging any Issued invoice past its Due Date.
+  - [ ] List every subdirectory of this folder — each is one invoice, named after its ID. Ignore loose files (`TODO.md`, backups). If there are no subdirectories, write "no invoices yet" under `## HUMAN` and skip the remaining steps.
+  - [ ] For each invoice folder, read `<folder>/INVOICE.md` and take from its header field table: **Title, ID, Status, Contact, Date, Due Date, Currency, Paid**. Then sum the `Total` column of its `## Items` table — that is the invoice's **net** value (VAT is never in the card; it is added only by `financial-export`).
+  - [ ] Under `## HUMAN`, write one Markdown table per Status present — in the order `Draft`, `Issued`, `Overdue`, `Paid`, `Cancelled` — with columns `| ID | Title | Contact | Date | Due Date | Net |`, one row per invoice, and a net total line under each table. Skip a status with no invoices; do not invent rows.
+  - [ ] Add a `- [ ]` item under `## HUMAN` for each **overdue** invoice: Status `Issued` and Due Date earlier than today — "chase payment or set Status to `Overdue`", naming the ID and how many days late.
+  - [ ] Add a `- [ ]` item under `## HUMAN` for each **stale draft**: Status `Draft` and Date more than 7 days old — "review and run `mark-issued`, or `void` it", naming the ID.
+  - [ ] Cross-check `../billed-tickets/`: for every invoice whose Status is `Paid`, if any `TICKET.md` there still carries that ID in its `Invoice` field, add a `- [ ]` item under `## HUMAN` — "play `../billed-tickets/TODO.md` → `settle-tickets` to close the tickets billed on `<id>`".
+  - [ ] Report anomalies instead of fixing them: a folder with no `INVOICE.md`, a missing header field, an unparsable `## Items` table, or a `Paid` status with an empty `Paid` date — list each under `## HUMAN` as a `- [ ]` item. Never edit an `INVOICE.md` while playing this card.
 
   ## HUMAN
 
   ## ACTIONS
 
   <!-- Move any item to ## BOT (bot executes) or ## HUMAN (you handle it) to activate. -->
+  - [ ] create-invoice-from-tickets — bill the Resolved tickets in `../tickets/`. **Step 1:** run `node .flowdeck/.creamdeck/_scripts/invoice-from-tickets.js --dry-run` from the project root and check the ticket selection and subtotal it prints — narrow it with `--tickets <id,id>` or `--stage <name>` if wrong. **Step 2:** read each selected ticket's `## Resolution` and write a client-facing summary (2–3 sentences, in the contact's language, no ticket IDs, no hours, no internal tool names) — that wording is the only part a model writes. **Step 3:** re-run without `--dry-run`, passing `--description "<summary>"`; the script mints `invoices/<id>/` as `Draft`, stamps `| Invoice | <id> |` plus an `## Updates` line into each billed `TICKET.md`, and moves those ticket folders to `../billed-tickets/`. **Step 4:** report ID, path, tickets billed and skipped, and the net subtotal, and add under `## HUMAN`: *review `INVOICE.md` before running `mark-issued`*. Never advance Status in the same play. Full options and the four billing kinds (`hours` / `fee` / `sale` / `adhoc`, priced off `CREAMDECK.md` → `## Services`) in `../ACTIONS.md`.
+  - [ ] mark-issued — ask which invoice (ID or folder); run `node .flowdeck/.creamdeck/_scripts/export-invoice.js <id-or-folder>` from the project root to write `invoice-export.json`, then set Status to `Issued` in that `INVOICE.md`. Only from `Draft`, and only after a human has reviewed the document.
+  - [ ] mark-paid — ask which invoice (ID or folder) and the payment date; set Status to `Paid` and fill the `Paid` field in `INVOICE.md`. Then mention `../billed-tickets/TODO.md` → `settle-tickets` under `## HUMAN` — the tickets billed on it are now closable.
+  - [ ] void — ask which invoice (ID or folder); set Status to `Cancelled` in `INVOICE.md`. If tickets were billed on it, mention `../billed-tickets/TODO.md` → `unbill` under `## HUMAN` — that returns them to `../tickets/` so they can be billed again.
+  - [ ] client-report — ask which invoice (ID or folder); run `node .flowdeck/.creamdeck/_scripts/client-report.js <id-or-folder> --lang <contact's language code>` from the project root to write `<folder>/client-report.html`. The script reads only client-safe fields (never `Hash`, `## Notes`, `## Updates`). Add under `## HUMAN`: *review the HTML before sending*; creamdeck never sends it.
+  - [ ] financial-export — ask which invoice (ID or folder); run `node .flowdeck/.creamdeck/_scripts/financial-export.js <id-or-folder> [--provider <name>] [--vat <rate>] [--lang <code>]` from the project root — writes `invoice-proforma.html` (client preview, not a fiscal document) and `invoice-<provider>.json` (provider import payload). Lines are net; VAT is applied here (default 23). Add under `## HUMAN`: *fill the `_requires` IDs in the JSON and verify it against the provider's API docs before POSTing*. The certified invoice is issued by the provider, never by this deck.
+  - [ ] draft-email — ask which invoice (ID or folder); read it and the linked contact's `../_contacts/<slug>/CONTACT.md`, make sure a client-safe artifact exists (run `client-report` or `financial-export` first if not), then scaffold `<folder>/email-draft/EMAIL.md` from `../../_energy-cards/EMAIL-DRAFT.md.template` — `To` = contact email, short cover note in the contact's language naming the invoice and its total, `Attachments` = the client-safe artifact only, **never** the raw `.md`. Draft only; surface it under `## HUMAN` for the human to send.
 
-  - [ ] mark-issued — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/export-invoice.js <id-or-folder>` from the project root to write `invoice-export.json`, then set Status to Issued in `INVOICE.md`
-  - [ ] mark-paid — prompt for an invoice ID or folder; set Status to Paid and fill the Paid date in `INVOICE.md`
-  - [ ] void — prompt for an invoice ID or folder; set Status to Cancelled in `INVOICE.md`
-  - [ ] client-report — prompt for an invoice ID or folder; run `node .flowdeck/.creamdeck/_scripts/client-report.js <id-or-folder> [--lang <code>]` from the project root to render a client-safe `client-report.html` (never reads Hash / Notes / Updates). Then add under `## HUMAN`: review `client-report.html` and confirm no internal detail before sending. See `ACTIONS.md`.
-  - [ ] financial-export — prompt for an invoice ID or folder (and optionally `--provider <name>`, default `moloni`); run `node .flowdeck/.creamdeck/_scripts/financial-export.js <id-or-folder> [--provider <name>] [--vat <rate>] [--lang <code>]` from the project root to write `invoice-proforma.html` (non-fiscal preview) + `invoice-<provider>.json`. The certified invoice is issued by the provider, not here. Then add under `## HUMAN`: fill the provider's `_requires` IDs in `invoice-<provider>.json` and verify against the provider's API docs before POSTing. See `ACTIONS.md`.
-  - [ ] draft-email — compose a cover email from this invoice into `<folder>/email-draft/EMAIL.md`, attaching `invoice-proforma.html` (or `client-report.html`), never the raw `INVOICE.md`. Then add under `## HUMAN`: review `email-draft/EMAIL.md` and send (or hand to emaildeck). Draft-not-send. See `ACTIONS.md`.
+  <!-- Playing this card writes only the overview under ## HUMAN; blank it before the next play. -->
 
   #### COMMENTS
   ```
