@@ -15,7 +15,7 @@ See [DECKS.md](DECKS.md) for the full registry, install instructions, and contri
 | [`gitdeck`](decks/gitdeck/) | GitHub repo vigilance — owned, competitor, provider repos |
 | [`webdeck`](decks/webdeck/) | Web search signals routed to crunchdeck |
 | [`notedeck`](decks/notedeck/) | Freeform notes as flowdeck cards |
-| [`creamdeck`](decks/creamdeck/) | Project-scoped CRM — contacts, unified inbox, a ticket pipeline with report exports, `add-meeting` scheduling into calendardeck, a proposal → request note → invoice billing chain with per-item approval hashes, and draft-not-send client-facing exports (`client-report`, `financial-export`, `draft-email`) |
+| [`creamdeck`](decks/creamdeck/) | Project-scoped CRM — contacts, unified inbox, a ticket pipeline with report exports, `add-meeting` scheduling into calendardeck, a proposal → request note → invoice billing chain with per-item approval hashes, `invoice-from-tickets` script (mint invoices from billable tickets → `billed-tickets/`), and draft-not-send client-facing exports (`client-report`, `financial-export`, `draft-email`) |
 | [`calendardeck`](decks/calendardeck/) | Google Calendar events as flowdeck cards, with a token → MCP → ICS sync fallback and a flat quick-event convention |
 | [`farmdeck`](decks/farmdeck/) | Prospection pipeline — Seed → Nurture → Active → Won |
 
