@@ -2,6 +2,7 @@
 // Usage: node .flowdeck/.emaildeck/_scripts/emaildeck_run.js --filter <slug>
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
 import { join, dirname } from 'node:path'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -623,6 +624,7 @@ mkdirSync(inboxDir, { recursive: true })
 
 let labeled = 0
 let created = 0
+const createdCards = []
 
 for (const thread of allThreads) {
   const threadId = thread.id
@@ -689,6 +691,7 @@ for (const thread of allThreads) {
     }))
 
     console.log(`  ✓ ${slug}`)
+    createdCards.push(join(cardDir, 'EMAIL.md'))
     created++
   }
 }
@@ -696,3 +699,23 @@ for (const thread of allThreads) {
 appendRunLog(allThreads.length, labeled, created)
 
 console.log(`\nDone — ${created} card(s) created.`)
+
+// ---------------------------------------------------------------------------
+// Vigilance dispatch — see VIGILANCE.md
+// ---------------------------------------------------------------------------
+// This lives in the runner, not in the `fetch-emails` prose, because the prose
+// only executes when a *model* plays the card. A cron invocation of this script
+// would otherwise fire no hooks at all — and the mail that proves a frozen
+// card's condition ("your plan has been upgraded") is exactly the mail that
+// arrives unattended.
+if (createdCards.length > 0) {
+  const boardRoot = join(flowdeckDir, '..')
+  const registry  = join(flowdeckDir, '_webhooks', 'SUBSCRIPTIONS.md')
+  if (existsSync(registry)) {
+    const args = ['scan-hooks', '--from', 'emaildeck']
+    for (const c of createdCards) args.push('--card', c)
+    const r = spawnSync('flowdeck', args, { cwd: boardRoot, stdio: 'inherit' })
+    // Never fail a fetch because dispatch failed: the mail is already filed.
+    if (r.error) console.error(`  (scan-hooks skipped — ${r.error.code === 'ENOENT' ? 'flowdeck not on PATH' : r.error.message})`)
+  }
+}

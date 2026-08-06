@@ -92,6 +92,7 @@ recurrence: on-demand
   - [ ] For each qualifying result, create `findings/<YYYY-MM-DD>-<slug>/`:
     - Scaffold `FINDING.md` from `_energy-cards/FINDING.md.template` — fill all fields; add a `## Relevance` line if PROFILE.md was read
     - Create `TODO.md` with `## ACTIONS` containing `send-to-crunchdeck`, `create-card`, and `discard`
+  - [ ] Run `flowdeck scan-hooks --from webdeck --card <path to each new FINDING.md>` — see `VIGILANCE.md`. Opt-in and a silent no-op if `.flowdeck/_webhooks/SUBSCRIPTIONS.md` doesn't exist.
   - [ ] Append a run log entry to `QUERY.md` under `## Run Log`.
   - [ ] If no qualifying results, note under `## HUMAN` and stop.
 

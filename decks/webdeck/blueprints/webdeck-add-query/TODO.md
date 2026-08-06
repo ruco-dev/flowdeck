@@ -49,6 +49,8 @@ lifecycle: one-shot
       #### COMMENTS
       ```
 
+  - [ ] Run `flowdeck scan-hooks --from webdeck --card <path to each new FINDING.md>` — see `VIGILANCE.md`. Opt-in and a silent no-op if `.flowdeck/_webhooks/SUBSCRIPTIONS.md` doesn't exist.
+
   - [ ] Append a run log entry to `QUERY.md` under `## Run Log`: date, results scanned, cards created.
 
   - [ ] If no qualifying results, note under `## HUMAN` and stop.
