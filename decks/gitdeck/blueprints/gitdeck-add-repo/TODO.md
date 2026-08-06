@@ -53,8 +53,6 @@ lifecycle: one-shot
       #### COMMENTS
       ```
 
-  - [ ] Run `flowdeck scan-hooks --from gitdeck --card <path to each new FINDING.md>` — see `VIGILANCE.md`. Opt-in and a silent no-op if `.flowdeck/_webhooks/SUBSCRIPTIONS.md` doesn't exist.
-
   - [ ] Append a run log entry to `REPO.md` under `## Run Log`: date, findings count, cards created.
 
   - [ ] If no new findings, note under `## HUMAN` and stop.

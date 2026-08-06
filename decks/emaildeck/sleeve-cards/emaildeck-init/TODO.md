@@ -201,7 +201,6 @@ recurrence: on-demand
   3. The runner reads `FILTER.md` for provider, query, label, date range, and default tasks.
   4. New message cards are created in `mail-inbox/<YYYY-MM-DD>-<slug>/`.
   5. Run Log in `FILTER.md` is updated automatically.
-  6. The runner then calls `flowdeck scan-hooks --from emaildeck --card <each new EMAIL.md>` itself — see `VIGILANCE.md`. Opt-in and a silent no-op if `.flowdeck/_webhooks/SUBSCRIPTIONS.md` doesn't exist. Because this lives in the runner rather than in this prose, a cron invocation fires hooks too — which is the whole point, since the mail that proves a frozen card's condition usually arrives unattended.
 
   ---
 
