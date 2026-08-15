@@ -6,6 +6,7 @@ The `.flowdeck/.crunchdeck/` directory is a product management deck. Each asset 
 - `.flowdeck/.crunchdeck/_decisions/ADR-XXXX/` — `ADR-XXXX.md` + `TODO.md` — architectural and product decisions
 - `.flowdeck/.crunchdeck/launches/vX.Y.Z/` — `LAUNCH.md` + `TODO.md` — per-launch operational checklists (created by the launches folder card)
 - `.flowdeck/.crunchdeck/prepare-to-publish/` — `AUDIT.md` + `TODO.md` — publish blockers as bot/human fix tasks (minted by the `publish-readiness-audit` sleeve ritual)
+- `.flowdeck/.crunchdeck/security-findings/` — `VULN-AUDIT.md` + `TODO.md` — dependency vulnerabilities as bot/human fix tasks (minted by the `publish-vuln-audit` sleeve ritual)
 
 **Pipeline:** emaildeck / gitdeck / webdeck (`send-to-crunchdeck`) → `crunchdeck-inbox/` → Backlog / Roadmap / Decision → flowdeck cards
 
@@ -28,10 +29,11 @@ Each operational folder carries its own `TODO.md` with `lifecycle: recurring` fr
 
 **Sleeve residents & `sleeveCards`:**
 
-The manifest's `sleeveCards` field lists two cards, both **rituals** (`lifecycle: ritual`, `recurrence: on-demand`) copied into the deck's own `_sleeve/` (`.flowdeck/.crunchdeck/_sleeve/`) by `flowdeck install crunchdeck`, played in place, never melded:
+The manifest's `sleeveCards` field lists three cards, all **rituals** (`lifecycle: ritual`, `recurrence: on-demand`) copied into the deck's own `_sleeve/` (`.flowdeck/.crunchdeck/_sleeve/`) by `flowdeck install crunchdeck`, played in place, never melded:
 
 - `crunchdeck-init` — replaying it is `flowdeck install crunchdeck --repair` (every step create-if-missing).
 - `publish-readiness-audit` — read-only pre-flight for going public: identity (registry twins, scoped-vs-unscoped), tarball truth (`npm pack --dry-run` vs README promises and internal leaks), git hygiene (unpushed commits, private-content sweep, tracked-vs-ignored contradictions), docs drift (README vs entry-point code), deck state (false-completion check on publish-prep cards + the card-sending inbox gate: `flowdeck inbox --gate` must be empty of unmelded received cards, since a `done-report` describes work that belongs in this release's notes — see repo-root `CARD-SENDING.md`), platform/CI, build smoke. The verdict materializes as a `prepare-to-publish` folder card (`AUDIT.md` report + `TODO.md` of bot/human fix tasks); a READY verdict hands off to the `launches/` pipeline. Play it before every release.
+- `publish-vuln-audit` — dependency-vulnerability audit of what actually ships, played **before** `publish-readiness-audit` (whose § Deck state gates on its freshness: a run predating the last lockfile change does not count). Three tiers, and the boundary is the point: **always** run `npm audit --json` read-only and record every advisory (runtime vs `dev` ranked separately); **may** apply `npm audit fix` — never `--force` — only when the change is lockfile-only, inside existing semver ranges, and the host declares a test command, running the tests after and reverting the lockfile if they fail; **hard-stop → human** for `--force`, a major bump, a no-fix-available advisory, or any direct-dependency range change. **It never edits `package.json`.** Also audits the published tarball separately from the declared tree (bundled/vendored deps `npm audit` misses) and records supply-chain warnings (deprecated/transferred deps, new `postinstall` scripts, non-registry lockfile sources). Verdict **CLEAN / FIXED / NEEDS ATTENTION / N-A** materializes as a `security-findings` folder card (`VULN-AUDIT.md` + `TODO.md`); it degrades to N-A on projects with no `package.json` rather than failing.
 
 `sleeveCards` holds **no operational instruments** — every crunchdeck instrument (inbox / profile / backlog / roadmap / stats / launches) is folder-scoped and therefore a folder card under `.crunchdeck/`, not a sleeve resident. the board's root `_sleeve/` is reserved for project-generic / cross-cutting instruments; a deck's own `_sleeve/` holds its rituals.
 
@@ -40,7 +42,7 @@ The manifest's `sleeveCards` field lists two cards, both **rituals** (`lifecycle
 Act on these without waiting to be asked:
 
 - **Architectural or product decision made** — open an ADR immediately: `flowdeck blueprint use crunchdeck-adr <slug>`, fill it with the decision, rationale, and rejected alternatives.
-- **Release being prepared** — play the `publish-readiness-audit` sleeve ritual first; on a READY verdict, play `.flowdeck/.crunchdeck/launches/TODO.md` — it infers the version from untagged meld cards and scaffolds the launch folder.
+- **Release being prepared** — play the `publish-vuln-audit` sleeve ritual, then `publish-readiness-audit`; on a READY verdict, play `.flowdeck/.crunchdeck/launches/TODO.md` — it infers the version from untagged meld cards and scaffolds the launch folder.
 - **Open question resolved into a significant choice** — if reversing it would cost meaningful time or money, it warrants an ADR.
 
 Surface the created file path under `## HUMAN` so the human can review.

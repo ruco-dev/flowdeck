@@ -1,6 +1,6 @@
 {
   "name": "crunchdeck",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "installRoot": ".crunchdeck",
   "agentMd": "AGENT.md",
   "blueprints": [
@@ -9,7 +9,8 @@
   ],
   "sleeveCards": [
     "crunchdeck-init",
-    "publish-readiness-audit"
+    "publish-readiness-audit",
+    "publish-vuln-audit"
   ],
   "energyCards": [
     "README.md.template",

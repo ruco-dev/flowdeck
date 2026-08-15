@@ -13,10 +13,12 @@ The `.flowdeck/.crunchdeck/` directory is a product management deck. Each asset 
 - `.flowdeck/.crunchdeck/_decisions/ADR-XXXX/` — `ADR-XXXX.md` + `TODO.md` — architectural and product decisions
 - `.flowdeck/.crunchdeck/launches/vX.Y.Z/` — `LAUNCH.md` + `TODO.md` — per-launch operational checklists (created by the launches pipeline card)
 - `.flowdeck/.crunchdeck/prepare-to-publish/` — `AUDIT.md` + `TODO.md` — publish blockers as bot/human fix tasks (minted by the `publish-readiness-audit` sleeve ritual)
+- `.flowdeck/.crunchdeck/security-findings/` — `VULN-AUDIT.md` + `TODO.md` — dependency vulnerabilities as bot/human fix tasks (minted by the `publish-vuln-audit` sleeve ritual)
 
 **Sleeve rituals (in `.flowdeck/.crunchdeck/_sleeve/`, played in place, never melded):**
 - `crunchdeck-init` — install/repair scaffold; replay converges the working tree
 - `publish-readiness-audit` — read-only pre-flight before going public: registry identity, tarball truth, git hygiene, docs drift, deck state (incl. the card-sending inbox gate — the board-level `_inbox/` must hold no unmelded received cards, `flowdeck inbox --gate`), CI, build smoke. Findings mint/refresh the `prepare-to-publish` folder card (`AUDIT.md` + bot/human fix tasks); READY verdict hands off to `launches/`. Play before every release
+- `publish-vuln-audit` — dependency-vulnerability audit, played **before** `publish-readiness-audit` (which gates on its freshness — a run older than the last lockfile change does not count). Always audits read-only; **may** apply `npm audit fix` (never `--force`) when the change is lockfile-only and in-range and the host declares a test command, reverting on test failure; hard-stops to `## HUMAN` for `--force`, major bumps, no-fix-available advisories, and direct-dependency range changes. Never edits `package.json`. Verdict CLEAN / FIXED / NEEDS ATTENTION / N-A mints the `security-findings` folder card (`VULN-AUDIT.md` + fix tasks)
 
 **Pipeline:** emaildeck / gitdeck / webdeck (`send-to-crunchdeck`) → `crunchdeck-inbox/` → Backlog / Roadmap / Decision → flowdeck cards
 
@@ -27,7 +29,7 @@ The `.flowdeck/.crunchdeck/` directory is a product management deck. Each asset 
 Act on these without waiting to be asked:
 
 - **Architectural or product decision made** — open an ADR immediately: `flowdeck blueprint use crunchdeck-adr <slug>`, fill it with the decision, rationale, and rejected alternatives.
-- **Release being prepared** — play `.flowdeck/.crunchdeck/launches/TODO.md`; it infers the version from untagged meld cards and scaffolds the launch folder.
+- **Release being prepared** — play `publish-vuln-audit`, then `publish-readiness-audit`; on READY, play `.flowdeck/.crunchdeck/launches/TODO.md`; it infers the version from untagged meld cards and scaffolds the launch folder.
 - **Open question resolved into a significant choice** — if reversing it would cost meaningful time or money, it warrants an ADR.
 
 Surface the created file path under `## HUMAN` so the human can review.
