@@ -347,10 +347,11 @@ recurrence: on-demand
   straight from the Resolved tickets in `../tickets/` (`create-invoice-from-tickets`).
   Status runs `Draft → Issued → Paid`, with `Overdue` and `Cancelled` as side exits.
 
-  **Playing this card only reports.** The `## BOT` steps below read files and write a
-  status overview under `## HUMAN` — they never create, edit, export or send an invoice.
-  Everything that writes sits in `## ACTIONS`, paused, until a human moves a line into
-  `## BOT`. Action definitions: `../ACTIONS.md`. IDs, prefix and prices: `../CREAMDECK.md`
+  **Default behaviour is read-only reporting.** The reporting steps in `## BOT` read files
+  and write a status overview under `## HUMAN` — they never create, edit, export or send
+  an invoice. Write actions (`create-invoice-from-tickets`, `mark-issued`, etc.) live in
+  `## ACTIONS` and are paused; move any line into `## BOT` to activate it for the next
+  play. Action definitions: `../ACTIONS.md`. IDs, prefix and prices: `../CREAMDECK.md`
   (`## Document IDs`, `## Services`).
 
   ## BOT
@@ -361,7 +362,7 @@ recurrence: on-demand
   - [ ] Add a `- [ ]` item under `## HUMAN` for each **overdue** invoice: Status `Issued` and Due Date earlier than today — "chase payment or set Status to `Overdue`", naming the ID and how many days late.
   - [ ] Add a `- [ ]` item under `## HUMAN` for each **stale draft**: Status `Draft` and Date more than 7 days old — "review and run `mark-issued`, or `void` it", naming the ID.
   - [ ] Cross-check `../billed-tickets/`: for every invoice whose Status is `Paid`, if any `TICKET.md` there still carries that ID in its `Invoice` field, add a `- [ ]` item under `## HUMAN` — "play `../billed-tickets/TODO.md` → `settle-tickets` to close the tickets billed on `<id>`".
-  - [ ] Report anomalies instead of fixing them: a folder with no `INVOICE.md`, a missing header field, an unparsable `## Items` table, or a `Paid` status with an empty `Paid` date — list each under `## HUMAN` as a `- [ ]` item. Never edit an `INVOICE.md` while playing this card.
+  - [ ] Report anomalies instead of fixing them: a folder with no `INVOICE.md`, a missing header field, an unparsable `## Items` table, a `Paid` status with an empty `Paid` date, or a non-`Paid`/non-`Cancelled` status where the `Paid` field is already filled — list each under `## HUMAN` as a `- [ ]` item. Never edit an `INVOICE.md` while playing this card.
 
   ## HUMAN
 
@@ -376,7 +377,7 @@ recurrence: on-demand
   - [ ] financial-export — ask which invoice (ID or folder); run `node .flowdeck/.creamdeck/_scripts/financial-export.js <id-or-folder> [--provider <name>] [--vat <rate>] [--lang <code>]` from the project root — writes `invoice-proforma.html` (client preview, not a fiscal document) and `invoice-<provider>.json` (provider import payload). Lines are net; VAT is applied here (default 23). Add under `## HUMAN`: *fill the `_requires` IDs in the JSON and verify it against the provider's API docs before POSTing*. The certified invoice is issued by the provider, never by this deck.
   - [ ] draft-email — ask which invoice (ID or folder); read it and the linked contact's `../_contacts/<slug>/CONTACT.md`, make sure a client-safe artifact exists (run `client-report` or `financial-export` first if not), then scaffold `<folder>/email-draft/EMAIL.md` from `../../_energy-cards/EMAIL-DRAFT.md.template` — `To` = contact email, short cover note in the contact's language naming the invoice and its total, `Attachments` = the client-safe artifact only, **never** the raw `.md`. Draft only; surface it under `## HUMAN` for the human to send.
 
-  <!-- Playing this card writes only the overview under ## HUMAN; blank it before the next play. -->
+  <!-- Blank ## HUMAN before the next play. -->
 
   #### COMMENTS
   ```
